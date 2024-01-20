@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+  mongo:
+    networks:
+      - mongo
+    ports:
+      - '27017:27017'
+    container_name: dkrcomp-mongo-final-huce
+    restart: always
+    logging:
+      options:
+        max-size: 1g
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=tienhg2001
+      - MONGO_INITDB_ROOT_PASSWORD=tienhg2001
+    image: mongo
+networks:
+  mongo:
+    driver: bridge
