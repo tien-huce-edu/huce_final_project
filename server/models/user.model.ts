@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from 'mongoose'
 import bcrypt from 'bcryptjs'
 
 const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
+// doan nay khai bao interface cho user
 export interface Iuser extends Document {
   name: string
   email: string
