@@ -48,7 +48,6 @@ export const registrationUser = catchAsyncError(async (req: Request, res: Respon
         message: `Đăng ký thành công vui lòng kiểm tra email ${user.email} để xác thực tài khoản`,
         activationToken: activationToken.token
       })
-      console.log('Oke')
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500))
     }
