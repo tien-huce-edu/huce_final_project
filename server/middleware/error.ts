@@ -1,3 +1,4 @@
+import e from 'express'
 import ErrorHandler from '../utils/ErrorHandler'
 
 export const ErrorMiddleware = (err: any, req: any, res: any, next: any) => {
@@ -25,8 +26,16 @@ export const ErrorMiddleware = (err: any, req: any, res: any, next: any) => {
     const message = 'JSON Web Token is expired. Try Again!!!'
     err = new ErrorHandler(message, 400)
   }
-  res.status(err.statusCode).json({
-    success: false,
-    message: err.message
-  })
+
+  // filter error done respone to client
+  process.env.NODE_ENV === 'production'
+    ? res.status(err.statusCode).json({
+        success: false,
+        message: err.message
+      })
+    : res.status(err.statusCode).json({
+        success: false,
+        message: err.message,
+        stack: err.stack
+      })
 }
