@@ -1,7 +1,7 @@
-require('dotenv').config()
-import mongoose, {Document, Model, Schema} from "mongoose"
+require("dotenv").config()
+import mongoose, { Document, Model, Schema } from "mongoose"
 import bcrypt from "bcryptjs"
-import jwt, {Secret} from 'jsonwebtoken'
+import jwt, { Secret } from "jsonwebtoken"
 
 const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -19,7 +19,7 @@ export interface Iuser extends Document {
     courses: Array<{ courseId: string }>
     comparePassword: (password: string) => Promise<boolean>
     signAccessToken: () => string
-    signRefreshToken: () => string;
+    signRefreshToken: () => string
 }
 
 // Khai bao userSchema
@@ -63,7 +63,7 @@ const userSchema: Schema<Iuser> = new mongoose.Schema(
             }
         ]
     },
-    {timestamps: true}
+    { timestamps: true }
 )
 
 // Hash password before saving user
@@ -76,12 +76,12 @@ userSchema.pre<Iuser>("save", async function (next) {
 })
 
 // sign access token
-userSchema.methods.signAccessToken = function ()  {
-    return jwt.sign({id: this._id}, process.env.ACCESS_TOKEN || '',)
+userSchema.methods.signAccessToken = function () {
+    return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || "")
 }
 
 userSchema.methods.signRefreshToken = function () {
-    return jwt.sign({id: this._id}, process.env.REFRESH_TOKEN || '', )
+    return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "")
 }
 
 // Compare password
