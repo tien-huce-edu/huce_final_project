@@ -21,21 +21,28 @@ export const registrationUser = catchAsyncError(async (req: Request, res: Respon
   try {
     const { name, email, password }: IRegistrationBody = req.body
 
+    // check exist email in db
     const isEmailExist = await userModel.findOne({ email })
     if (isEmailExist) {
       return next(new ErrorHandler('Email already exist', 400))
     }
+
+    // Create user variable
     const user: IRegistrationBody = {
       name,
       email,
       password
     }
 
+    // Call function create active token
     const activationToken = createActivationToken(user)
+    // Get Activation Code from function create active token return
     const { activationCode } = activationToken
+    // Create mail data
     const data = { user: { name: user.name }, activationCode }
+    // create view in mail
     await ejs.renderFile(path.join(__dirname, '../mails/activation-mail.ejs'), data)
-
+    // try catch mail
     try {
       await sendMail({
         email: user.email,
@@ -61,6 +68,7 @@ interface IActivationToken {
   activationCode: string
 }
 export const createActivationToken = (user: any): IActivationToken => {
+  // create activation code with random math
   const activationCode = Math.floor(1000 + Math.random() * 9000).toString()
   // decode userInfo and activationCode to jwt string
   const token = jwt.sign(
