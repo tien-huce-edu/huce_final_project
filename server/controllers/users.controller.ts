@@ -167,10 +167,13 @@ export const loginUser = catchAsyncError(
 export const logoutUser = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            // delete token in cookie
             res.cookie("access_token", "", { maxAge: 1 })
             res.cookie("refresh_token", "", { maxAge: 1 })
+            // delete user in redis
             const userId = req.user?._id
             redis.del(userId)
+            // send response
             res.status(200).json({
                 success: true,
                 message: "Đăng xuất thành công"
