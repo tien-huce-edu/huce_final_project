@@ -5,7 +5,7 @@ require("dotenv").config()
 const redisClient = () => {
     if (process.env.REDIS_URL) {
         console.log("Redis connect success")
-        return process.env.REDIS_URL
+        return JSON.parse(process.env.REDIS_URL)
     } else {
         throw new Error("Redis connect fail")
     }
