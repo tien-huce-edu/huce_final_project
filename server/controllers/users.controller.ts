@@ -9,6 +9,8 @@ import ErrorHandler from "../utils/ErrorHandler"
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt"
 import { redis } from "../utils/redis"
 import sendMail from "../utils/sendMail"
+import { getUserById } from "../services/user.service"
+import { get } from "http"
 
 // register user
 interface IRegistrationBody {
@@ -212,6 +214,18 @@ export const updateAccessToken = catchAsyncError(
                 success: true,
                 accessToken
             })
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
+        }
+    }
+)
+
+// get user info
+export const getUserInfo = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userId = req.user?._id
+            getUserById(userId as string, res)
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
         }
