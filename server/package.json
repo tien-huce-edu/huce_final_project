@@ -7,7 +7,9 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "ts-node-dev --respawn --transpile-only server.ts",
         "prettier": "prettier -c *",
-        "lint": "eslint \"**/*.{ts,tsx}\""
+        "prettier:fix": "prettier --write *",
+        "lint": "eslint \"**/*.{ts,tsx}\"",
+        "lint:fix": "eslint --fix \"**/*.{ts,tsx}\""
     },
     "author": "tienhg2001",
     "license": "ISC",
