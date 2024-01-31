@@ -1,6 +1,7 @@
 import express from "express"
 import {
     activateUser,
+    getUserInfo,
     loginUser,
     logoutUser,
     registrationUser,
@@ -15,5 +16,6 @@ userRouter.post("/activate-user", activateUser)
 userRouter.post("/login", loginUser)
 userRouter.post("/logout", isAuthenticated, logoutUser)
 userRouter.get("/refreshtoken", updateAccessToken)
+userRouter.get("/me", isAuthenticated, getUserInfo)
 
 export default userRouter
