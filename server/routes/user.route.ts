@@ -3,7 +3,8 @@ import {
     activateUser,
     loginUser,
     logoutUser,
-    registrationUser
+    registrationUser,
+    updateAccessToken
 } from "../controllers/users.controller"
 import { isAuthenticated } from "../middleware/auth"
 
@@ -13,5 +14,6 @@ userRouter.post("/registration", registrationUser)
 userRouter.post("/activate-user", activateUser)
 userRouter.post("/login", loginUser)
 userRouter.post("/logout", isAuthenticated, logoutUser)
+userRouter.get("/refreshtoken", updateAccessToken)
 
 export default userRouter

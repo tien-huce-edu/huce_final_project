@@ -1,15 +1,14 @@
 require("dotenv").config()
+import ejs from "ejs"
 import { NextFunction, Request, Response } from "express"
-import jwt, { Secret } from "jsonwebtoken"
+import jwt, { JwtPayload, Secret } from "jsonwebtoken"
+import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
 import userModel, { Iuser } from "../models/user.model"
 import ErrorHandler from "../utils/ErrorHandler"
-import ejs from "ejs"
-import path from "path"
-import { send } from "process"
-import sendMail from "../utils/sendMail"
-import { sendToken } from "../utils/jwt"
+import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt"
 import { redis } from "../utils/redis"
+import sendMail from "../utils/sendMail"
 
 // register user
 interface IRegistrationBody {
@@ -19,6 +18,7 @@ interface IRegistrationBody {
     avatar?: string
 }
 
+// registration controller
 export const registrationUser = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -44,10 +44,7 @@ export const registrationUser = catchAsyncError(
             // Create mail data
             const data = { user: { name: user.name }, activationCode }
             // create view in mail
-            await ejs.renderFile(
-                path.join(__dirname, "../mails/activation-mail.ejs"),
-                data
-            )
+            await ejs.renderFile(path.join(__dirname, "../mails/activation-mail.ejs"), data)
             // try catch mail
             try {
                 await sendMail({
@@ -95,11 +92,11 @@ interface IActivationRequest {
     activation_code: string
 }
 
+// active controller
 export const activateUser = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { activation_token, activation_code } =
-                req.body as IActivationRequest
+            const { activation_token, activation_code } = req.body as IActivationRequest
 
             // encode userInfo and activationCode to jwt string
             const newUser: { user: Iuser; activationCode: string } = jwt.verify(
@@ -137,14 +134,13 @@ interface ILoginBody {
     password: string
 }
 
+// login controller
 export const loginUser = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { email, password } = req.body as ILoginBody
             if (!email || !password) {
-                return next(
-                    new ErrorHandler("Thông tin không được để trống", 400)
-                )
+                return next(new ErrorHandler("Thông tin không được để trống", 400))
             }
             // check exist email in db
             const user = await userModel.findOne({ email }).select("+password")
@@ -164,6 +160,7 @@ export const loginUser = catchAsyncError(
     }
 )
 
+// logout controller
 export const logoutUser = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -177,6 +174,43 @@ export const logoutUser = catchAsyncError(
             res.status(200).json({
                 success: true,
                 message: "Đăng xuất thành công"
+            })
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
+        }
+    }
+)
+
+// update access token
+export const updateAccessToken = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const refresh_token = req.cookies.refresh_token as string
+            const decoded = jwt.verify(
+                refresh_token,
+                process.env.REFRESH_TOKEN as string
+            ) as JwtPayload
+            const message = "Không tồn tại refresh token"
+            if (!decoded) {
+                return next(new ErrorHandler(message, 400))
+            }
+            const session = await redis.get(decoded.id as string)
+            if (!session) {
+                return next(new ErrorHandler(message, 400))
+            }
+            const user = JSON.parse(session)
+            // generate new token
+            const accessToken = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN as string, {
+                expiresIn: "5m"
+            })
+            const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN as string, {
+                expiresIn: "3d"
+            })
+            res.cookie("access_token", accessToken, accessTokenOptions)
+            res.cookie("refresh_token", refreshToken, refreshTokenOptions)
+            res.status(200).json({
+                success: true,
+                accessToken
             })
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
