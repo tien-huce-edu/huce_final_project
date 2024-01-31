@@ -19,14 +19,8 @@ export const sendToken = (user: Iuser, statusCode: number, res: Response) => {
     redis.set(user._id, JSON.stringify(user))
 
     // parse environtment variable to integrate with fallback values
-    const accessTokenExpire = parseInt(
-        process.env.ACCESS_TOKEN_EXPIRE || "300",
-        10
-    )
-    const refreshTokenExpire = parseInt(
-        process.env.REFRESH_TOKEN_EXPIRE || "1200",
-        10
-    )
+    const accessTokenExpire = parseInt(process.env.ACCESS_TOKEN_EXPIRE || "300")
+    const refreshTokenExpire = parseInt(process.env.REFRESH_TOKEN_EXPIRE || "1200")
     // options for cookie
     const accessTokenOptions: IActivationToken = {
         experies: new Date(Date.now() + accessTokenExpire * 1000),
@@ -42,6 +36,7 @@ export const sendToken = (user: Iuser, statusCode: number, res: Response) => {
     }
     if (process.env.NODE_ENV === "production") {
         accessTokenOptions.secure = true
+        refreshTokenOptions.secure = true
     }
     // response cookie and json
     res.cookie("access_token", accessToken, accessTokenOptions)
