@@ -35,3 +35,10 @@ npm-debug.log
 
 #ignore the .idea folder
 .idea
+
+#ignore the .vscode folder
+.vscode
+
+#ignore lock files
+yarn.lock
+package-lock.json
