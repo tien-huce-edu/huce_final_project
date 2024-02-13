@@ -4,6 +4,7 @@ import ErrorHandler from "../utils/ErrorHandler"
 import cloudinary from "cloudinary"
 import { createCourse } from "../services/course.service"
 
+// Upload course controller
 export const uploadCourse = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -18,7 +19,7 @@ export const uploadCourse = catchAsyncError(
                     public_id: myCloud.public_id
                 }
             }
-            createCourse(data, res, next);
+            createCourse(data, res, next)
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 500))
         }
