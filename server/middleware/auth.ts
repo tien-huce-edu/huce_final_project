@@ -10,10 +10,7 @@ export const isAuthenticated = catchAsyncError(
         if (!access_token) {
             return next(new ErrorHandler("Cookie hết hạn!", 401))
         }
-        const decoded = jwt.verify(
-            access_token,
-            process.env.ACCESS_TOKEN as string
-        ) as JwtPayload
+        const decoded = jwt.verify(access_token, process.env.ACCESS_TOKEN as string) as JwtPayload
         if (!decoded) {
             return next(new ErrorHandler("Lỗi máy chủ vui lòng thử lại!", 500))
         }
@@ -25,3 +22,14 @@ export const isAuthenticated = catchAsyncError(
         next()
     }
 )
+
+export const authorizeRoles = (...roles: string[]) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        if (!roles.includes(req.user?.role || "")) {
+            return next(
+                new ErrorHandler(`Vai trò ${req.user?.role} không được phép truy cập!`, 403)
+            )
+        }
+        next()
+    }
+}
