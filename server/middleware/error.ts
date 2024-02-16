@@ -36,6 +36,6 @@ export const ErrorMiddleware = (err: any, req: any, res: any, next: any) => {
         : res.status(err.statusCode).json({
               success: false,
               message: err.message,
-              stack: err.stack
+            //   stack: err.stack
           })
 }
