@@ -118,3 +118,32 @@ export const getAllCourses = catchAsyncError(
         }
     }
 )
+
+// get course content -- only for purchased course
+export const getCourseByUser = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userCourseList = req.user?.courses
+            
+            const courseId = req.params.id
+
+            const courseExist = userCourseList?.find(
+                (course: any) => course._id.toString() === courseId
+            )
+
+            if (!courseExist) {
+                return next(new ErrorHandler("Bạn chưa mua khóa học này!", 400))
+            }
+
+            const course = await CourseModel.findById(courseId)
+            const content = course?.courseData
+
+            res.status(200).json({
+                success: true,
+                content
+            })
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 500))
+        }
+    }
+)
