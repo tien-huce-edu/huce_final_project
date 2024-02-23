@@ -7,7 +7,7 @@ import e from "express"
 const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 // doan nay khai bao interface cho user
-export interface Iuser extends Document {
+export interface IUser extends Document {
     name: string
     email: string
     password: string
@@ -24,7 +24,7 @@ export interface Iuser extends Document {
 }
 
 // Khai bao userSchema
-const userSchema: Schema<Iuser> = new mongoose.Schema(
+const userSchema: Schema<IUser> = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -68,7 +68,7 @@ const userSchema: Schema<Iuser> = new mongoose.Schema(
 )
 
 // Hash password before saving user
-userSchema.pre<Iuser>("save", async function (next) {
+userSchema.pre<IUser>("save", async function (next) {
     if (!this.isModified("password")) {
         next()
     }
@@ -78,11 +78,11 @@ userSchema.pre<Iuser>("save", async function (next) {
 
 // sign access token
 userSchema.methods.signAccessToken = function () {
-    return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || "", { expiresIn: "5m" })
+    return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || "", { expiresIn: "2h" })
 }
 
 userSchema.methods.signRefreshToken = function () {
-    return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "", { expiresIn: "3d" })
+    return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "", { expiresIn: "1d" })
 }
 
 // Compare password
@@ -90,5 +90,5 @@ userSchema.methods.comparePassword = async function (enteredPassword: string): P
     return await bcrypt.compare(enteredPassword, this.password)
 }
 
-const userModel: Model<Iuser> = mongoose.model("User", userSchema)
+const userModel: Model<IUser> = mongoose.model("User", userSchema)
 export default userModel
