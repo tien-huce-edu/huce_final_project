@@ -1,6 +1,6 @@
 require("dotenv").config()
 import { NextFunction, Request, Response } from "express"
-import { Iuser } from "../models/user.model"
+import { IUser } from "../models/user.model"
 import { redis } from "./redis"
 
 interface IActivationToken {
@@ -28,7 +28,7 @@ export const refreshTokenOptions: IActivationToken = {
     sameSite: "lax"
 }
 
-export const sendToken = (user: Iuser, statusCode: number, res: Response) => {
+export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     const accessToken = user.signAccessToken()
     const refreshToken = user.signRefreshToken()
 
