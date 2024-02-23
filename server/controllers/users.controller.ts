@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express"
 import jwt, { JwtPayload, Secret } from "jsonwebtoken"
 import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
-import userModel, { Iuser } from "../models/user.model"
+import userModel, { IUser } from "../models/user.model"
 import { getUserById } from "../services/user.service"
 import ErrorHandler from "../utils/ErrorHandler"
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt"
@@ -101,10 +101,10 @@ export const activateUser = catchAsyncError(
             const { activation_token, activation_code } = req.body as IActivationRequest
 
             // encode userInfo and activationCode to jwt string
-            const newUser: { user: Iuser; activationCode: string } = jwt.verify(
+            const newUser: { user: IUser; activationCode: string } = jwt.verify(
                 activation_token,
                 process.env.ACTIVATION_SECRET as string
-            ) as { user: Iuser; activationCode: string }
+            ) as { user: IUser; activationCode: string }
 
             // check activation code in jwt string and activation code in request body is match
             if (newUser.activationCode !== activation_code) {
