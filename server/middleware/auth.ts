@@ -7,7 +7,6 @@ import { redis } from "../utils/redis"
 export const isAuthenticated = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         const access_token = req.cookies.access_token as string
-        console.log("cookie", req.cookies)
         if (!access_token) {
             return next(new ErrorHandler("Cookie hết hạn!", 401))
         }
