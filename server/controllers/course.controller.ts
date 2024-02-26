@@ -273,3 +273,104 @@ export const addAnswer = catchAsyncError(
         }
     }
 )
+
+// add review to course
+
+interface IAddReviewData {
+    review: string
+    rating: number
+    userId: string
+}
+
+export const addReview = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userCourseList = req.user?.courses
+
+            const courseId = req.params.id
+
+            // check course id exist in user courses list
+            const courseExist = userCourseList?.some(
+                (course: any) => course._id.toString() === courseId.toString()
+            )
+            if (!courseExist) {
+                return next(new ErrorHandler("Bạn chưa mua khóa học này!", 400))
+            }
+            const course = await CourseModel.findById(courseId)
+
+            const { review, rating } = req.body as IAddReviewData
+
+            const reviewData: any = {
+                user: req.user,
+                comment: review,
+                rating
+            }
+            course?.reviews.push(reviewData)
+            let avg = 0
+
+            course?.reviews.forEach((item: any) => {
+                avg += item.rating
+            })
+            if (course) {
+                course.rating = avg / course.reviews.length
+            }
+
+            await course?.save()
+
+            const notification = {
+                title: "Có người vừa đánh giá khóa học của bạn",
+                message: `Khóa học ${course?.name} của bạn vừa nhận được một đánh giá mới từ ${req.user?.name}`
+            }
+
+            res.status(200).json({
+                success: true,
+                course
+            })
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 500))
+        }
+    }
+)
+
+// add reply in review
+interface IAddReviewData {
+    comment: string
+    courseId: string
+    reviewId: string
+}
+
+export const addReplyToReview = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { comment, courseId, reviewId } = req.body as IAddReviewData
+            const course = await CourseModel.findById(courseId)
+
+            if (!course) {
+                return next(new ErrorHandler("Không tìm thấy khóa học!", 404))
+            }
+            const review = course?.reviews?.find((item: any) => item._id.equals(reviewId))
+            if (!review) {
+                return next(new ErrorHandler("Không tìm thấy đánh giá!", 404))
+            }
+            const newReply: any = {
+                user: req.user,
+                comment
+            }
+
+            if (!review.commentReplies) {
+                review.commentReplies = []
+            }
+
+            review.commentReplies.push(newReply)
+
+            await course.save()
+
+            res.status(200).json({
+                success: true,
+                course
+            })
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 500))
+        }
+    }
+)
