@@ -22,7 +22,7 @@ export const createOrder = catchAsyncError(
                 return next(new ErrorHandler("Không tìm thấy người dùng", 404))
             }
             const courseExistInUser = user.courses.some(
-                (course: any) => course.toString() === courseId
+                (course: any) => course._id.toString() === courseId.toString()
             )
             if (courseExistInUser) {
                 return next(new ErrorHandler("Bạn đã mua khóa học này rồi", 400))
@@ -35,14 +35,13 @@ export const createOrder = catchAsyncError(
 
             const data: any = {
                 courseId: course._id,
-                userId: user._id
+                userId: user._id,
+                payment_info
             }
-
-            newOrder(data, res, next)
 
             const mailData = {
                 order: {
-                    _id: course._id.slice(0, 6),
+                    _id: course._id.toString(),
                     name: course.name,
                     price: course.price,
                     date: new Date().toLocaleDateString("en-US", {
@@ -53,35 +52,36 @@ export const createOrder = catchAsyncError(
                 }
             }
             const html = await ejs.renderFile(
-                path.join(__dirname, "..mails/order-confimation.ejs"),
+                path.join(__dirname, "../mails/order-confimation.ejs"),
                 { order: mailData }
             )
 
             try {
-                if (user) {
-                    await sendMail({
-                        email: user.email,
-                        subject: "Xác nhận đơn hàng",
-                        template: "order-confimation.ejs",
-                        data: mailData
-                    })
-                }
+                await sendMail({
+                    email: user.email,
+                    subject: "Xác nhận đơn hàng",
+                    template: "order-confimation.ejs",
+                    data: mailData
+                })
+
+                user?.courses.push(course?._id)
+                await user?.save()
+
+                await NotificationModel.create({
+                    userId: user?._id,
+                    title: "Đơn hàng mới",
+                    message: `Bạn đã mua khóa học ${course.name}`
+                })
+
+                course.purchased || course.purchased === 0
+                    ? (course.purchased += 1)
+                    : course.purchased
+
+                await course.save()
+                newOrder(data, res, next)
             } catch (error: any) {
                 return next(new ErrorHandler(error.message, 500))
             }
-            user?.courses.push(course?._id)
-            await user?.save()
-
-            const notification = await NotificationModel.create({
-                user: user?._id,
-                title: "Đơn hàng mới",
-                content: `Bạn đã mua khóa học ${course.name}`
-            })
-            res.status(201).json({
-                success: true,
-                message: "Đã tạo đơn hàng thành công",
-                order: course
-            })
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 500))
         }
