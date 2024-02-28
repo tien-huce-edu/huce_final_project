@@ -55,6 +55,10 @@ export const editCourse = catchAsyncError(
                 { $set: data },
                 { new: true }
             )
+            const isCacheExist = await redis.get(courseId)
+            if (isCacheExist) {
+                await redis.set(courseId, JSON.stringify(course))
+            }
             res.status(200).json({
                 success: true,
                 course
