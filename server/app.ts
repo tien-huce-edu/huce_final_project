@@ -7,6 +7,8 @@ import cors from "cors"
 import { ErrorMiddleware } from "./middleware/error"
 import courseRouter from "./routes/course.route"
 import userRouter from "./routes/user.route"
+import orderModel from "./models/orderModel"
+import orderRouter from "./routes/order.route"
 
 // body parser
 app.use(express.json({ limit: "50mb" }))
@@ -22,8 +24,7 @@ app.use(
 )
 
 // API route
-app.use("/api/v1", userRouter)
-app.use("/api/v1", courseRouter)
+app.use("/api/v1", userRouter, courseRouter, orderRouter)
 
 // testing route
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {
