@@ -6,7 +6,7 @@ import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
 import CourseModel from "../models/course.model"
 import { IUser } from "../models/user.model"
-import { createCourse } from "../services/course.service"
+import { createCourse, getAllCoursesService } from "../services/course.service"
 import ErrorHandler from "../utils/ErrorHandler"
 import { redis } from "../utils/redis"
 import sendMail from "../utils/sendMail"
@@ -388,6 +388,18 @@ export const addReplyToReview = catchAsyncError(
             })
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 500))
+        }
+    }
+)
+
+// get all courses -- only for admin
+
+export const getAllUsers = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            getAllCoursesService(res)
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
         }
     }
 )

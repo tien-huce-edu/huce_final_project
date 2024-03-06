@@ -6,7 +6,7 @@ import jwt, { JwtPayload, Secret } from "jsonwebtoken"
 import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
 import userModel, { IUser } from "../models/user.model"
-import { getUserById } from "../services/user.service"
+import { getAllUsersService, getUserById } from "../services/user.service"
 import ErrorHandler from "../utils/ErrorHandler"
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt"
 import { redis } from "../utils/redis"
@@ -381,6 +381,19 @@ export const updateProfilePicture = catchAsyncError(
                 message: "Cập nhật ảnh đại diện thành công",
                 user
             })
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
+        }
+    }
+)
+
+// get all users -- only for admin
+
+export const getAllUsers = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            getAllUsersService(res);
+            
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
         }
