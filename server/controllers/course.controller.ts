@@ -6,10 +6,12 @@ import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
 import CourseModel from "../models/course.model"
 import { IUser } from "../models/user.model"
-import { createCourse } from "../services/course.service"
+import { createCourse, getAllCoursesService } from "../services/course.service"
 import ErrorHandler from "../utils/ErrorHandler"
 import { redis } from "../utils/redis"
 import sendMail from "../utils/sendMail"
+import NotificationModel from "../models/notificationModel"
+import { title } from "process"
 
 // Upload course controller
 export const uploadCourse = catchAsyncError(
@@ -55,6 +57,10 @@ export const editCourse = catchAsyncError(
                 { $set: data },
                 { new: true }
             )
+            const isCacheExist = await redis.get(courseId)
+            if (isCacheExist) {
+                await redis.set(courseId, JSON.stringify(course))
+            }
             res.status(200).json({
                 success: true,
                 course
@@ -186,6 +192,12 @@ export const addQuestion = catchAsyncError(
 
             courseContent.questions.push(newQuestion)
 
+            await NotificationModel.create({
+                user: req.user?._id,
+                title: "Câu hỏi mới trong khóa học của bạn",
+                message: `${req.user?.name} đã đặt câu hỏi mới trong khoá học của bạn ${course?.name}`
+            })
+
             await course?.save()
 
             res.status(200).json({
@@ -243,6 +255,11 @@ export const addAnswer = catchAsyncError(
             await course?.save()
 
             if (req.user?._id === question.user._id) {
+                await NotificationModel.create({
+                    user: req.user?._id,
+                    title: "Câu trả lời cho câu hỏi của bạn",
+                    message: `Câu hỏi của bạn trong khoá học ${course?.name} vừa nhận được một câu trả lời mới`
+                })
             } else {
                 const data = {
                     name: question.user.name,
@@ -371,6 +388,18 @@ export const addReplyToReview = catchAsyncError(
             })
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 500))
+        }
+    }
+)
+
+// get all courses -- only for admin
+
+export const getAllUsers = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            getAllCoursesService(res)
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
         }
     }
 )
