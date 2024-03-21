@@ -1,2 +1,5 @@
 # disable backup draw io file
 Diagrams/*.bkp
+
+# disable .DS_Store
+.DS_Store
