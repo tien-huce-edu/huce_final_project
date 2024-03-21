@@ -6,7 +6,7 @@ import jwt, { JwtPayload, Secret } from "jsonwebtoken"
 import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
 import userModel, { IUser } from "../models/user.model"
-import { getAllUsersService, getUserById } from "../services/user.service"
+import { getAllUsersService, getUserById, updateUserRoleService } from "../services/user.service"
 import ErrorHandler from "../utils/ErrorHandler"
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt"
 import { redis } from "../utils/redis"
@@ -393,6 +393,45 @@ export const getAllUsers = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             getAllUsersService(res)
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
+        }
+    }
+)
+
+// update user role -- only for admin
+export const updateUserRole = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id, role } = req.body
+            updateUserRoleService(res, id, role)
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
+        }
+    }
+)
+
+// delete user -- only for admin
+export const deleteUser = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params
+            const user = await userModel.findById(id)
+
+            if(!user) {
+                return next(new ErrorHandler('User không tồn tại', 400))
+
+            }
+
+            await user.deleteOne({id})
+
+            await redis.del(id)
+
+            res.status(200).json({
+                success: true,
+                message: "User deleted successfully."
+            })
+
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
         }
