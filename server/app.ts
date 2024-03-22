@@ -10,6 +10,7 @@ import userRouter from "./routes/user.route"
 import orderRouter from "./routes/order.route"
 import notificationRouter from "./routes/notification.route"
 import analysticRouter from "./routes/analystics.route"
+import layoutRouter from "./routes/layout.route"
 
 // body parser
 app.use(express.json({ limit: "50mb" }))
@@ -25,10 +26,18 @@ app.use(
 )
 
 // API route
-app.use("/api/v1", userRouter, courseRouter, orderRouter, notificationRouter, analysticRouter)
+app.use(
+    "/api/v1",
+    userRouter,
+    courseRouter,
+    orderRouter,
+    notificationRouter,
+    analysticRouter,
+    layoutRouter
+)
 
 // testing route
-app.get("/test", (req: Request, res: Response, next: NextFunction) => {
+app.get("/api/v1/test", (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
         success: true,
         message: "API Working"
