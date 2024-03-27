@@ -198,7 +198,12 @@ export const updateAccessToken = catchAsyncError(
             }
             const session = await redis.get(decoded.id as string)
             if (!session) {
-                return next(new ErrorHandler(message, 400))
+                return next(
+                    new ErrorHandler(
+                        "Hãy đăng nhập lại vì phiên đăng nhập của bạn đã hết hạn!",
+                        400
+                    )
+                )
             }
             const user = JSON.parse(session)
             // generate new token
@@ -212,6 +217,9 @@ export const updateAccessToken = catchAsyncError(
             req.user = user
             res.cookie("access_token", accessToken, accessTokenOptions)
             res.cookie("refresh_token", refreshToken, refreshTokenOptions)
+
+            await redis.set(user._id, JSON.stringify(user), "EX", 604800)
+
             res.status(200).json({
                 success: true,
                 accessToken
@@ -418,12 +426,11 @@ export const deleteUser = catchAsyncError(
             const { id } = req.params
             const user = await userModel.findById(id)
 
-            if(!user) {
-                return next(new ErrorHandler('User không tồn tại', 400))
-
+            if (!user) {
+                return next(new ErrorHandler("User không tồn tại", 400))
             }
 
-            await user.deleteOne({id})
+            await user.deleteOne({ id })
 
             await redis.del(id)
 
@@ -431,7 +438,6 @@ export const deleteUser = catchAsyncError(
                 success: true,
                 message: "User deleted successfully."
             })
-
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
         }
