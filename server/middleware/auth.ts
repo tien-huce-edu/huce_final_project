@@ -16,7 +16,7 @@ export const isAuthenticated = catchAsyncError(
         }
         const user = await redis.get(decoded.id)
         if (!user) {
-            return next(new ErrorHandler("Phiên đăng nhập không tồn tại!", 401))
+            return next(new ErrorHandler("Phiên đăng nhập không tồn tại, vui lòng đăng nhập!", 401))
         }
         req.user = JSON.parse(user)
         next()
