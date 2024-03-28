@@ -16,6 +16,7 @@ const Page: FC<Props> = () => {
         keywords="Programing, Elearning, Online, Study, Teaching, Learning"
       />
       <Header open={open} setOpen={setOpen} activeItem={activeItem}/>
+      
     </div>
   );
 };
