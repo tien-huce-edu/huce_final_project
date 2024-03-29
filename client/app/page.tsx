@@ -3,6 +3,7 @@ import React, { FC, useState } from "react";
 import Heading from "./utils/Heading";
 import Header from "./components/Header";
 import Hero from "./components/Route/Hero";
+import "./globals.css";
 
 interface Props {}
 
@@ -16,8 +17,8 @@ const Page: FC<Props> = () => {
         description="Elearning là một nền tảng dành cho sinh viên và giảng viên trao đổi việc giảng dạy và học tập online"
         keywords="Programing, Elearning, Online, Study, Teaching, Learning"
       />
-      <Header open={open} setOpen={setOpen} activeItem={activeItem}/>
-      <Hero/>
+      <Header open={open} setOpen={setOpen} activeItem={activeItem} />
+      <Hero />
     </div>
   );
 };
