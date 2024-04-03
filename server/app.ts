@@ -21,10 +21,12 @@ app.use(cookieParser())
 // cors => resourse sharing
 app.use(
     cors({
-        origin: process.env.CORS_ORIGIN
+        origin: JSON.parse(process.env.CORS_ORIGIN || ""),
+        credentials: true
     })
 )
 
+console.log(typeof JSON.parse(process.env.CORS_ORIGIN || ""))
 // API route
 app.use(
     "/api/v1",
