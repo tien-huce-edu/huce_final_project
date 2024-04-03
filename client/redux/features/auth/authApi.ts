@@ -1,5 +1,5 @@
-import { socialAuth } from "./../../../../server/controllers/users.controller";
-import { apiSlice } from "./../api/apiSlice";
+import { socialAuth } from "../../../../controllers/users.controller";
+import { apiSlice } from "../api/apiSlice";
 import { userLoggedIn, userRegistration } from "./authSlice";
 
 type RegistrationResponse = {

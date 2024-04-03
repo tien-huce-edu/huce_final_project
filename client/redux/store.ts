@@ -9,7 +9,7 @@ export const store = configureStore({
     auth: authSlice,
   },
   devTools: false,
-  middleware: (getDefaultMiddleware) =>
+  middleware: (getDefaultMiddleware: any) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
