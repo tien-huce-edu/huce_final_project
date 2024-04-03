@@ -152,7 +152,7 @@ export const loginUser = catchAsyncError(
             // check password match
             const isPasswordMatch = await user.comparePassword(password)
             if (!isPasswordMatch) {
-                return next(new ErrorHandler("Mật khẩu không đúng", 400))
+                return next(new ErrorHandler("Tài khoản hoặc mật khẩu không đúng", 400))
             }
             // function send token to client
             sendToken(user, 200, res)
@@ -170,7 +170,7 @@ export const logoutUser = catchAsyncError(
             res.cookie("access_token", "", { maxAge: 1 })
             res.cookie("refresh_token", "", { maxAge: 1 })
             // delete user in redis
-            const userId = req.user?._id
+            const userId = req?.user?._id
             redis.del(userId)
             // send response
             res.status(200).json({

@@ -42,11 +42,10 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     // response cookie and json
     res.cookie("access_token", accessToken, accessTokenOptions)
     res.cookie("refresh_token", refreshToken, refreshTokenOptions)
-    const newUser = JSON.parse(JSON.stringify(user))
-    delete newUser.password
+
     res.status(statusCode).json({
         success: true,
-        newUser,
+        user,
         accessToken
     })
 }
