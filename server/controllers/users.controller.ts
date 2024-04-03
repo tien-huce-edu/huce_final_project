@@ -29,7 +29,7 @@ export const registrationUser = catchAsyncError(
             // check exist email in db
             const isEmailExist = await userModel.findOne({ email })
             if (isEmailExist) {
-                return next(new ErrorHandler("Email already exist", 400))
+                return next(new ErrorHandler("Email đã tồn tại!\n Vui lòng nhập email khác", 400))
             }
 
             // Create user variable
