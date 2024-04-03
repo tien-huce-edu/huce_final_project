@@ -1,7 +1,9 @@
 "use client";
 import { styles } from "@/app/styles/style";
+import { useRegisterMutation } from "@/redux/features/auth/authApi";
 import { useFormik } from "formik";
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from "react";
+import toast from "react-hot-toast";
 import {
   AiFillGithub,
   AiOutlineEye,
@@ -28,16 +30,36 @@ const schema = Yup.object().shape({
 
 const SignUp: FC<Props> = ({ setRoute }) => {
   const [show, setShow] = useState(false);
+  const [register, { data, error, isSuccess }] = useRegisterMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      const message = data?.message || "Đăng ký thành công";
+      toast.success(message);
+      setRoute("Verification");
+    }
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
+      }
+    }
+  }, [isSuccess, error]);
 
   const formik = useFormik({
     initialValues: {
       name: "Nguyen Van Tien",
-      email: "t@gmail.com",
+      email: "tienhg201@gmail.com",
       password: "123123123",
     },
     validationSchema: schema,
-    onSubmit: (values) => {
-      setRoute("Verification");
+    onSubmit: async ({ name, email, password }) => {
+      const data = {
+        name,
+        email,
+        password,
+      };
+      await register(data);
     },
   });
 
@@ -130,13 +152,13 @@ const SignUp: FC<Props> = ({ setRoute }) => {
             className="cursor-pointer ml-2 text-black dark:text-white"
           />
         </div>
-        <h5 className="text-center pt-4 font-Poppins text-[14px]">
-          Not have any account?{" "}
+        <h5 className="text-center pt-4 font-Poppins text-[14px] text-black dark:text-white">
+          Already have an account?{" "}
           <span
             className="text-[#2190ff] p-1 cursor-pointer"
-            onClick={() => setRoute("Sign-Up")}
+            onClick={() => setRoute("Login")}
           >
-            Sign up
+            Login
           </span>
         </h5>
       </form>

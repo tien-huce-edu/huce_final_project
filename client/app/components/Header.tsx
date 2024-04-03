@@ -5,9 +5,9 @@ import NavItem from "../utils/NavItem";
 import ThemeSwitcher from "../utils/ThemeSwitcher";
 import { HiOutlineMenuAlt3, HiOutlineUserCircle } from "react-icons/hi";
 import CustomModal from "../utils/CustomModal";
-import Login from "../component/Auth/Login";
-import SignUp from "../component/Auth/SignUp";
-import Verification from "../component/Auth/Verification";
+import Login from "./Auth/Login";
+import SignUp from "./Auth/SignUp";
+import Verification from "./Auth/Verification";
 
 type Props = {
   open: boolean;
