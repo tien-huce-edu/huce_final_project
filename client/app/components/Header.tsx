@@ -45,7 +45,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
     if (isSuccess) {
       toast.success("Đăng nhập thành công");
     }
-  }, [data, user, error]);
+  }, [data, user]);
 
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
