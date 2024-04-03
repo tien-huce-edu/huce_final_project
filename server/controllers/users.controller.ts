@@ -152,7 +152,7 @@ export const loginUser = catchAsyncError(
             // check password match
             const isPasswordMatch = await user.comparePassword(password)
             if (!isPasswordMatch) {
-                return next(new ErrorHandler("Mật khẩu không đúng", 400))
+                return next(new ErrorHandler("Tài khoản hoặc mật khẩu không đúng", 400))
             }
             // function send token to client
             sendToken(user, 200, res)

@@ -26,7 +26,6 @@ app.use(
     })
 )
 
-console.log(typeof JSON.parse(process.env.CORS_ORIGIN || ""))
 // API route
 app.use(
     "/api/v1",
