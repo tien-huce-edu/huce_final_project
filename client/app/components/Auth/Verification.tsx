@@ -1,6 +1,7 @@
+'use client'
 import { styles } from "@/app/styles/style";
 import { useActivationMutation } from "@/redux/features/auth/authApi";
-import { FC, use, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { useSelector } from "react-redux";
@@ -32,7 +33,7 @@ const Verification: FC<Props> = ({ setRoute }) => {
       toast.success("Xác thực thành công");
       setRoute("Login");
     }
-    if (error) {
+    if (error && typeof error === "object") {
       if ("data" in error) {
         const errorData = error as any;
         toast.error(errorData.data.message);
