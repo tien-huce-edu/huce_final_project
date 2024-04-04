@@ -255,7 +255,7 @@ export const socialAuth = catchAsyncError(
             const { name, email, avatar } = req.body as ISocialAuthBody
             const user = await userModel.findOne({ email })
             if (!user) {
-                const newUser = await userModel.create({ name, email, avatar })
+                const newUser = await userModel.create({ name, email, avatar: { url: avatar } })
                 sendToken(newUser, 200, res)
             } else {
                 sendToken(user, 200, res)
