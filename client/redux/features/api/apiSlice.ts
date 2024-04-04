@@ -25,11 +25,9 @@ export const apiSlice = createApi({
             userLoggedIn({
               accessToken: result.data.accessToken,
               user: result.data.user,
-            })
+            }),
           );
-        } catch (error: any) {
-          console.log(error);
-        }
+        } catch (error: any) {}
       },
     }),
   }),
