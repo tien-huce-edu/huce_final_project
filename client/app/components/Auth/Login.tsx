@@ -47,7 +47,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
       toast.success("Đăng nhập thành công");
       setOpen(false);
     }
-    if (error) {
+    if (error && typeof error === "object") {
       if ("data" in error) {
         const errorData = error as any;
         toast.error(errorData.data.message);

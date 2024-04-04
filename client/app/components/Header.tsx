@@ -1,19 +1,22 @@
 "use client";
+import {
+  useLogOutQuery,
+  useSocialAuthMutation,
+} from "@/redux/features/auth/authApi";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { HiOutlineMenuAlt3, HiOutlineUserCircle } from "react-icons/hi";
+import { useSelector } from "react-redux";
+import avatar from "../../public/assets/image/avatar.jpg";
+import CustomModal from "../utils/CustomModal";
 import NavItem from "../utils/NavItem";
 import ThemeSwitcher from "../utils/ThemeSwitcher";
-import { HiOutlineMenuAlt3, HiOutlineUserCircle } from "react-icons/hi";
-import CustomModal from "../utils/CustomModal";
 import Login from "./Auth/Login";
 import SignUp from "./Auth/SignUp";
 import Verification from "./Auth/Verification";
-import { useSelector } from "react-redux";
-import Image from "next/image";
-import avatar from "../../public/assets/image/avatar.jpg";
-import { useSession } from "next-auth/react";
-import { useSocialAuthMutation } from "@/redux/features/auth/authApi";
-import toast from "react-hot-toast";
 
 type Props = {
   open: boolean;
@@ -29,6 +32,9 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
 
   const { user } = useSelector((state: any) => state.auth);
   const { data } = useSession();
+  const [logout, setLogout] = useState(false);
+
+  const {} = useLogOutQuery(undefined, { skip: !logout ? true : false });
 
   const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
 
@@ -42,8 +48,20 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
         });
       }
     }
-    if (isSuccess) {
-      toast.success("Đăng nhập thành công");
+
+    if (error && typeof error === "object") {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
+      }
+    }
+    if (data === null) {
+      if (isSuccess) {
+        toast.success("Đăng nhập thành công");
+      }
+    }
+    if (data === null) {
+      setLogout(true);
     }
   }, [data, user]);
 
@@ -95,11 +113,16 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
               </div>
               {/* end only for mobile */}
               {user ? (
-                <Link href={"/"}>
+                <Link href={"/profile"}>
                   <Image
-                    src={user.avatar ? user.avatar : avatar}
+                    src={user.avatar ? user.avatar.url : avatar}
                     alt="avatar"
+                    width={30}
+                    height={30}
                     className="w-[30px] h-[30px] rounded-full cursor-pointer"
+                    style={{
+                      border: activeItem === 5 ? "2px solid #37a39a" : "",
+                    }}
                   />
                 </Link>
               ) : (
