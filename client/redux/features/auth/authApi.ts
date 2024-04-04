@@ -1,4 +1,3 @@
-import { socialAuth } from "../../../../controllers/users.controller";
 import { apiSlice } from "../api/apiSlice";
 import { userLoggedIn, userRegistration } from "./authSlice";
 
@@ -15,8 +14,8 @@ type ActivationResponse = {
 type RegistrationData = {};
 
 export const authApi = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    register: builder.mutation<RegistrationResponse, RegistrationData>({
+  endpoints: (builder: any) => ({
+    register: builder.mutation({
       query: (data) => ({
         url: "registration",
         method: "POST",
