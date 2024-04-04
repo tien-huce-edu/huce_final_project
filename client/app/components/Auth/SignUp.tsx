@@ -34,11 +34,11 @@ const SignUp: FC<Props> = ({ setRoute }) => {
 
   useEffect(() => {
     if (isSuccess) {
-      const message = data?.message || "Đăng ký thành công";
+      const message = (data as any)?.message || "Đăng ký thành công";
       toast.success(message);
       setRoute("Verification");
     }
-    if (error) {
+    if (error && typeof error === "object") {
       if ("data" in error) {
         const errorData = error as any;
         toast.error(errorData.data.message);
