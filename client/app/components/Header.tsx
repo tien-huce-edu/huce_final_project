@@ -60,9 +60,9 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
         toast.success("Đăng nhập thành công");
       }
     }
-    if (data === null) {
-      setLogout(true);
-    }
+    // if (data === null) {
+    //   setLogout(true);
+    // }
   }, [data, user]);
 
   if (typeof window !== "undefined") {
