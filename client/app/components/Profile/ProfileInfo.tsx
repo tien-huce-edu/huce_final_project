@@ -18,25 +18,22 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
   const {} = useLoadUserQuery(undefined, { skip: loadUser ? false : true });
 
   const imageHandler = async (e: any) => {
-
     const fileReader = new FileReader();
     fileReader.onload = () => {
       if (fileReader.readyState === 2) {
         const avatar = fileReader.result;
         updateAvatar(avatar);
-    
-
       }
     };
     fileReader.readAsDataURL(e.target.files[0]);
   };
   useEffect(() => {
     if (isSuccess) {
-      console.log("load user")
+      console.log("load user");
       setLoadUser(true);
     }
   }, [isSuccess, error]);
-  console.log(user)
+  console.log(user);
 
   const handleSubmit = async (e: any) => {
     console.log("ffff");

@@ -29,7 +29,9 @@ const SideBarProfile: FC<Props> = ({
         onClick={() => setActive(1)}
       >
         <Image
-          src={user.avatar || avatar ? user.avatar.url || avatar : avatarDefault}
+          src={
+            user.avatar || avatar ? user.avatar.url || avatar : avatarDefault
+          }
           alt="avatar"
           width={20}
           height={20}
