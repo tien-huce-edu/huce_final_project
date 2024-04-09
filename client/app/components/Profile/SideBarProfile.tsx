@@ -1,11 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 import { FC } from "react";
 import { AiOutlineLogout } from "react-icons/ai";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { SiCoursera } from "react-icons/si";
 import avatarDefault from "../../../public/assets/image/avatar.jpg";
-import { MdOutlineAdminPanelSettings } from "react-icons/md";
-import Link from "next/link";
 
 type Props = {
   user: any;
