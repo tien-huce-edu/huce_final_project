@@ -3,8 +3,12 @@ import React, { FC, useEffect, useState } from "react";
 import { AiOutlineCamera } from "react-icons/ai";
 import avatarDefault from "../../../public/assets/image/avatar.jpg";
 import { styles } from "@/app/styles/style";
-import { useUpdateAvatarMutation } from "@/redux/features/user/userApi";
+import {
+  useEditProfileMutation,
+  useUpdateAvatarMutation,
+} from "@/redux/features/user/userApi";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
+import toast from "react-hot-toast";
 
 type Props = {
   avatar?: string | null;
@@ -13,37 +17,65 @@ type Props = {
 
 const ProfileInfo: FC<Props> = ({ avatar, user }) => {
   const [name, setName] = useState(user && user.name);
-  const [updateAvatar, { isSuccess, error }] = useUpdateAvatarMutation();
+  const [updateAvatar, { isSuccess, error, isLoading }] =
+    useUpdateAvatarMutation();
+  const [
+    editProfile,
+    { isSuccess: editProfileSuccess, error: editProfileError },
+  ] = useEditProfileMutation();
   const [loadUser, setLoadUser] = useState(false);
   const {} = useLoadUserQuery(undefined, { skip: loadUser ? false : true });
 
   const imageHandler = async (e: any) => {
-
+    if (e.target.files[0].size > 1000 * 1000 * 8) {
+      const size = Math.round(e.target.files[0].size / 1000 / 1000);
+      toast.error(
+        `[file ${size}MB > 1MB] file size is too large, please pick a smaller file`,
+      );
+      return;
+    }
     const fileReader = new FileReader();
     fileReader.onload = () => {
       if (fileReader.readyState === 2) {
         const avatar = fileReader.result;
         updateAvatar(avatar);
-    
-
       }
     };
     fileReader.readAsDataURL(e.target.files[0]);
   };
   useEffect(() => {
-    if (isSuccess) {
-      console.log("load user")
+    if (isSuccess || editProfileSuccess) {
       setLoadUser(true);
     }
-  }, [isSuccess, error]);
-  console.log(user)
+    if (error || editProfileError) {
+      if (error && typeof error === "object") {
+        {
+          if ("data" in error) {
+            const errorData = error as any;
+            toast.error(errorData.data.message);
+          }
+        }
+      }
+      if (editProfileError && typeof editProfileError === "object") {
+        {
+          if ("data" in editProfileError) {
+            const errorData = editProfileError as any;
+            toast.error(errorData.data.message);
+          }
+        }
+      }
+    }
+  }, [isSuccess, error, editProfileSuccess, editProfileError]);
 
   const handleSubmit = async (e: any) => {
-    console.log("ffff");
+    e.preventDefault();
+    if (name !== "") {
+      editProfile({ name });
+    }
   };
 
   return (
-    <div className="flex flex-col justify-center w-full">
+    <>
       <div className="w-full flex justify-center">
         <div className="relative">
           <Image
@@ -90,22 +122,24 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
               <input
                 type="text"
                 readOnly
-                className={`${styles.input} !w-[95%] mb-1 800px:mb-0`}
+                className={`${styles.input} !w-[95%] mb-1 800px:mb-0 border-slate-500`}
                 required
                 value={user?.email}
+                disabled
               />
             </div>
             <input
-              className={`w-full 800px:w-[250px] h-[40px] border border-[#37a39a] text-center dark:text-[#fff] text-black rounded-[3px] mt-8 cursor-pointer`}
+              className={`w-full 800px:w-[250px] h-[40px] border border-[#37a39a] text-center dark:text-[#fff] text-black rounded-[3px] mt-8 cursor-pointer hover:bg-[#37a39a] transition`}
               required
               value="Update"
               type="submit"
+              disabled={isLoading}
             />
           </div>
         </form>
         <br />
       </div>
-    </div>
+    </>
   );
 };
 
