@@ -214,7 +214,7 @@ export const updateAccessToken = catchAsyncError(
                 expiresIn: "3d"
             })
 
-            req.user = user
+            res.user = user
             res.cookie("access_token", accessToken, accessTokenOptions)
             res.cookie("refresh_token", refreshToken, refreshTokenOptions)
 
@@ -276,19 +276,16 @@ export const updateUserInfo = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             // get name and email from request body
-            const { name, email } = req.body as IUpdateUserInfo
+            const { name } = req.body as IUpdateUserInfo
             // get user id from request
             const userId = req.user?._id
             // find user in db
             const user = await userModel.findById(userId)
             // check name and email if not null then update
-            if (email && user) {
-                const isEmailExist = await userModel.findOne({ email })
-                if (isEmailExist) {
-                    return next(new ErrorHandler("Email đã tồn tại", 400))
-                }
-                user.email = email
+            if (user && name === user.name) {
+                return next(new ErrorHandler("Tên không được trùng với tên hiện tại", 400))
             }
+
             if (name && user) {
                 user.name = name
             }
@@ -320,6 +317,9 @@ export const updatePassword = catchAsyncError(
                 return next(
                     new ErrorHandler("Thông tin mật khẩu cũ và mới không được để trống", 400)
                 )
+            }
+            if (oldPassword === newPassword) {
+                return next(new ErrorHandler("Mật khẩu mới không được trùng với mật khẩu cũ", 400))
             }
 
             // find user in db
