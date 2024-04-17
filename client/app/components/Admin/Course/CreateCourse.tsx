@@ -3,39 +3,106 @@ import { useState } from "react";
 import CourseInfomation from "./CourseInfomation";
 import CourseOptions from "./CourseOptions";
 import CourseData from "./CourseData";
+import CourseContent from "./CourseContent";
+import CourseReview from "./CourseReview";
 
 type Props = {};
 
 const CreateCourse = (props: Props) => {
   const [active, setActive] = useState(0);
   const [courseInfo, setCourseInfo] = useState({
-    name: "123",
-    description: "123",
-    price: 123,
-    estimatedPrice: 123,
-    tags: "123",
-    level: "123",
-    demoUrl: "123",
-    thumbnail: "123",
+    name: "Khoá học lập trình expressJs",
+    description:
+      "Khóa học về Express.js là một hành trình thú vị vào thế giới của lập trình web phía server. Trong khoá học này, bạn sẽ được dẫn dắt từ các khái niệm cơ bản đến những kỹ thuật nâng cao, giúp bạn xây dựng các ứng dụng web mạnh mẽ và linh hoạt.",
+    price: 200000,
+    estimatedPrice: 180000,
+    tags: "NodeJS, Javascript, ExpressJS, Web Development",
+    level: "Normal",
+    demoUrl: "d143e69dd8e6d6100fb411b2d115c040",
+    thumbnail: "",
   });
-  const [benefits, setBenefits] = useState([{ title: "" }]);
-  const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
+  const [benefits, setBenefits] = useState([
+    {
+      title:
+        "Express.js là một framework web mạnh mẽ và linh hoạt, cho phép bạn xây dựng các ứng dụng web phức tạp hoặc đơn giản tùy thuộc vào nhu cầu của dự án.",
+    },
+    {
+      title:
+        "Express.js được thiết kế để làm việc hiệu quả và tối ưu trong việc xử lý các yêu cầu HTTP và xây dựng các ứng dụng web nhanh chóng.",
+    },
+    {
+      title:
+        "Express.js có một hệ thống middleware mạnh mẽ, cho phép bạn mở rộng và tùy chỉnh ứng dụng của mình theo cách linh hoạt, từ xử lý yêu cầu đến xác thực và quản lý phiên.",
+    },
+  ]);
+  const [prerequisites, setPrerequisites] = useState([
+    {
+      title:
+        "Hiểu biết cơ bản về các ngôn ngữ lập trình web sẽ giúp bạn dễ dàng học Express.js hơn. Điều này bao gồm hiểu biết về cách HTML và CSS được sử dụng để tạo ra giao diện người dùng và cách JavaScript được sử dụng để tạo ra các tương tác động trên trang web.",
+    },
+    {
+      title:
+        "Express.js là một framework dựa trên Node.js, vì vậy hiểu biết cơ bản về Node.js sẽ là một lợi thế. Điều này bao gồm hiểu biết về cách Node.js hoạt động, cách cài đặt các module và sử dụng npm để quản lý các gói phụ thuộc.",
+    },
+  ]);
   const [courseContentData, setCourseContentData] = useState([
     {
-      videoUrl: "",
-      title: "",
-      description: "",
       videoSection: "Untitled Section",
+      title: "123",
+      videoUrl: "d143e69dd8e6d6100fb411b2d115c040",
+      description: "123",
       links: [
         {
-          title: "",
-          url: "",
+          title: "123",
+          url: "123",
         },
       ],
-      suggestions: "",
+      suggestions: "123",
     },
   ]);
   const [courseData, setCousreData] = useState({});
+
+  const handleSubmit = async () => {
+    const formattedBenefits = benefits.map((benefit) => ({
+      title: benefit.title,
+    }));
+    const formattedPrerequisites = prerequisites.map((prerequisite) => ({
+      title: prerequisite.title,
+    }));
+
+    const formattedCourseContentData = courseContentData.map((content) => ({
+      videoUrl: content.videoUrl,
+      title: content.title,
+      description: content.description,
+      videoSection: content.videoSection,
+      links: content.links.map((link) => ({
+        title: link.title,
+        url: link.url,
+      })),
+      suggestions: content.suggestions,
+    }));
+
+    const data = {
+      name: courseInfo.name,
+      description: courseInfo.description,
+      price: courseInfo.price,
+      estimatedPrice: courseInfo.estimatedPrice,
+      tags: courseInfo.tags,
+      thumbnail: courseInfo.thumbnail,
+      level: courseInfo.level,
+      demoUrl: courseInfo.demoUrl,
+      totalVideos: courseContentData.length,
+      benefits: formattedBenefits,
+      prerequisites: formattedPrerequisites,
+      courseContent: formattedCourseContentData,
+    };
+
+    setCousreData(data);
+  };
+  const handleCourseCreate = async (e: any) => {
+    const data = courseData;
+  };
+
   return (
     <div className="w-full flex min-h-screen">
       <div className="w-[80%]">
@@ -55,6 +122,23 @@ const CreateCourse = (props: Props) => {
             setPrerequisites={setPrerequisites}
             active={active}
             setActive={setActive}
+          />
+        )}{" "}
+        {active === 2 && (
+          <CourseContent
+            active={active}
+            setActive={setActive}
+            courseContentData={courseContentData}
+            setCourseContentData={setCourseContentData}
+            handleSubmit={handleSubmit}
+          />
+        )}
+        {active === 3 && (
+          <CourseReview
+            active={active}
+            setActive={setActive}
+            courseData={courseData}
+            handleCourseCreate={handleCourseCreate}
           />
         )}
       </div>

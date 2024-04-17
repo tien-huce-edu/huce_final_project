@@ -12,6 +12,7 @@ import { redis } from "../utils/redis"
 import sendMail from "../utils/sendMail"
 import NotificationModel from "../models/notificationModel"
 import { title } from "process"
+import axios from "axios"
 
 // Upload course controller
 export const uploadCourse = catchAsyncError(
@@ -411,12 +412,11 @@ export const deleteCourse = catchAsyncError(
             const { id } = req.params
             const course = await CourseModel.findById(id)
 
-            if(!course) {
-                return next(new ErrorHandler('course không tồn tại', 400))
-
+            if (!course) {
+                return next(new ErrorHandler("course không tồn tại", 400))
             }
 
-            await course.deleteOne({id})
+            await course.deleteOne({ id })
 
             await redis.del(id)
 
@@ -424,7 +424,30 @@ export const deleteCourse = catchAsyncError(
                 success: true,
                 message: "course deleted successfully."
             })
+        } catch (error: any) {
+            return next(new ErrorHandler(error.message, 400))
+        }
+    }
+)
 
+export const generateVideoUrl = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { videoId } = req.body
+            
+            const response = await axios.post(
+                `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+                { ttl: 300 },
+                {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Apisecret ${process.env.VDOCIPHER_API_SECRET}`
+                    }
+                }
+            )
+            
+            res.json(response.data)
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
         }
