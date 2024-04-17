@@ -9,7 +9,8 @@ import {
     getCourseByUser,
     getSingleCourse,
     uploadCourse,
-    deleteCourse
+    deleteCourse,
+    generateVideoUrl
 } from "../controllers/course.controller"
 import { authorizeRoles, isAuthenticated } from "../middleware/auth"
 const courseRouter = express.Router()
@@ -33,6 +34,8 @@ courseRouter.put("/add-review/:id", isAuthenticated, addReview)
 courseRouter.put("/add-reply", isAuthenticated, authorizeRoles("admin"), addReplyToReview)
 
 courseRouter.get("/get-courses", isAuthenticated, authorizeRoles("admin"), getAllCourses)
+
+courseRouter.post("/getVdoCipherOTP", generateVideoUrl)
 
 courseRouter.delete("/delete-courses/:id", isAuthenticated, authorizeRoles("admin"), deleteCourse)
 
