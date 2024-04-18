@@ -9,16 +9,17 @@ export const store = configureStore({
     auth: authSlice,
   },
   devTools: false,
-  middleware: (getDefaultMiddleware: any) =>
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
+//call the refresh token function on every page loads
+
 const initializeApp = async () => {
-  await store.dispatch<any>(
+  await store.dispatch(
     apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true }),
   );
-
-  await store.dispatch<any>(
+  await store.dispatch(
     apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true }),
   );
 };
