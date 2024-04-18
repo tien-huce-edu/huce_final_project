@@ -1,3 +1,4 @@
+import axios from "axios"
 import cloudinary from "cloudinary"
 import ejs from "ejs"
 import { NextFunction, Request, Response } from "express"
@@ -5,14 +6,12 @@ import mongoose from "mongoose"
 import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
 import CourseModel from "../models/course.model"
+import NotificationModel from "../models/notificationModel"
 import { IUser } from "../models/user.model"
 import { createCourse, getAllCoursesService } from "../services/course.service"
 import ErrorHandler from "../utils/ErrorHandler"
 import { redis } from "../utils/redis"
 import sendMail from "../utils/sendMail"
-import NotificationModel from "../models/notificationModel"
-import { title } from "process"
-import axios from "axios"
 
 // Upload course controller
 export const uploadCourse = catchAsyncError(
