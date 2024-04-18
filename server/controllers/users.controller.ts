@@ -220,10 +220,11 @@ export const updateAccessToken = catchAsyncError(
 
             await redis.set(user._id, JSON.stringify(user), "EX", 604800)
 
-            res.status(200).json({
-                success: true,
-                accessToken
-            })
+            // res.status(200).json({
+            //     success: true,
+            //     accessToken
+            // })
+            next()
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
         }
@@ -258,6 +259,7 @@ export const socialAuth = catchAsyncError(
                 const newUser = await userModel.create({ name, email, avatar: { url: avatar } })
                 sendToken(newUser, 200, res)
             } else {
+                await userModel.findOneAndUpdate({ email }, { avatar: { url: avatar }, name})
                 sendToken(user, 200, res)
             }
         } catch (error: any) {
