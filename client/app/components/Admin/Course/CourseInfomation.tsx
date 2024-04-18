@@ -1,6 +1,7 @@
 import { styles } from "@/app/styles/style";
 import { read } from "fs";
 import { FC, useState } from "react";
+import { IoMdArrowDropdownCircle } from "react-icons/io";
 
 type Props = {
   courseInfo: any;
@@ -52,7 +53,7 @@ const CourseInfomation: FC<Props> = ({
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        console.log(reader.result)
+        console.log(reader.result);
         setCourseInfo({ ...courseInfo, thumbnail: reader.result });
       };
       reader.readAsDataURL(file);
@@ -224,7 +225,7 @@ const CourseInfomation: FC<Props> = ({
           />
           <label
             htmlFor="file"
-            className={`w-full min-h-[10vh] dark:border-white border-[#00000026] p-3 border flex items-center justify-center ${
+            className={`transition ease-in-out w-full min-h-[20vh] dark:border-white border-[#00000026] p-3 border flex items-center justify-center ${
               dragging ? "bg-blue-500" : "bg-transparent"
             }`}
             onDragOver={handleDragOver}
@@ -238,9 +239,19 @@ const CourseInfomation: FC<Props> = ({
                 className="max-h-full w-full object-cover"
               />
             ) : (
-              <span className="text-black dark:text-white">
-                Drag and drop your thumbnail here or click to browse
-              </span>
+              <div className="flex flex-col items-center">
+                <IoMdArrowDropdownCircle
+                  size={dragging ? 70 : 50}
+                  className="animate-bounce transition-all ease-in-out"
+                />
+                {!dragging && (
+                  <span
+                    className={`text-black dark:text-white mb-10 cursor-pointer`}
+                  >
+                    Drag and drop your thumbnail here or click here
+                  </span>
+                )}
+              </div>
             )}
           </label>
         </div>
