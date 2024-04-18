@@ -1,14 +1,33 @@
 "use client";
-import { useState } from "react";
+import { useCreateCourseMutation } from "@/redux/features/courses/coursesApi";
+import { redirect } from "next/navigation";
+import { FC, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import CourseContent from "./CourseContent";
+import CourseData from "./CourseData";
 import CourseInfomation from "./CourseInfomation";
 import CourseOptions from "./CourseOptions";
-import CourseData from "./CourseData";
-import CourseContent from "./CourseContent";
 import CourseReview from "./CourseReview";
 
 type Props = {};
 
-const CreateCourse = (props: Props) => {
+const CreateCourse: FC<Props> = () => {
+  const [createCourse, { isLoading, isSuccess, error }] =
+    useCreateCourseMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Course created successfully");
+      redirect("/admin/all-courses");
+    }
+    if (error) {
+      if ("data" in error) {
+        const errorMessage = error as any;
+        toast.error(errorMessage.data.message);
+      }
+    }
+  }, [isSuccess, error]);
+
   const [active, setActive] = useState(0);
   const [courseInfo, setCourseInfo] = useState({
     name: "Khoá học lập trình expressJs",
@@ -86,7 +105,7 @@ const CreateCourse = (props: Props) => {
       name: courseInfo.name,
       description: courseInfo.description,
       price: courseInfo.price,
-      estimatedPrice: courseInfo.estimatedPrice,
+      estimatePrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
       thumbnail: courseInfo.thumbnail,
       level: courseInfo.level,
@@ -94,13 +113,17 @@ const CreateCourse = (props: Props) => {
       totalVideos: courseContentData.length,
       benefits: formattedBenefits,
       prerequisites: formattedPrerequisites,
-      courseContent: formattedCourseContentData,
+      courseData: formattedCourseContentData,
     };
 
     setCousreData(data);
   };
   const handleCourseCreate = async (e: any) => {
     const data = courseData;
+
+    if (!isLoading) {
+      await createCourse(data);
+    }
   };
 
   return (
