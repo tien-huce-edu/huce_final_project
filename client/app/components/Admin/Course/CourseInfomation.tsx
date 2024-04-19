@@ -132,7 +132,7 @@ const CourseInfomation: FC<Props> = ({
         </div>
         <br />
         <div className="w-full flex justify-between">
-          <div className="w-[45%]">
+          <div className="w-[%]">
             <label className={`${styles.label}`} htmlFor="email">
               Thẻ khoá học
             </label>
@@ -150,7 +150,7 @@ const CourseInfomation: FC<Props> = ({
             ${styles.input}`}
             />
           </div>
-          <div className="w-[50%]">
+          {/* <div className="w-[50%]">
             <label className={`${styles.label} w-[50%]`}>
               Course Categories
             </label>
@@ -165,7 +165,7 @@ const CourseInfomation: FC<Props> = ({
             >
               <option className="bg-[#1c2024]" value="">
                 Select Category
-              </option>
+              </option> */}
               {/* {categories &&
                 categories.map((item: any) => (
                   <option
@@ -176,8 +176,8 @@ const CourseInfomation: FC<Props> = ({
                     {item.title}
                   </option>
                 ))} */}
-            </select>
-          </div>
+            {/* </select>
+          </div> */}
         </div>
         <br />
         <div className="w-full flex justify-between">
