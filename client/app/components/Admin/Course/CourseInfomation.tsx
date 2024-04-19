@@ -1,5 +1,5 @@
+"use client"
 import { styles } from "@/app/styles/style";
-import { read } from "fs";
 import { FC, useState } from "react";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 
