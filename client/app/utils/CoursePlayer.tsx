@@ -1,3 +1,4 @@
+"use client"
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 type Props = {

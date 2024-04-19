@@ -104,7 +104,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
               <NavItem activeItem={activeItem} isMobile={false} />
               <ThemeSwitcher />
               {/* only for mobile */}
-              <div className="800px:hidden">
+              <div className="800px:hidden mr-2">
                 <HiOutlineMenuAlt3
                   size={25}
                   className="cursor-pointer dark:text-white text-black"
