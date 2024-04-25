@@ -3,7 +3,7 @@ require("dotenv").config()
 
 const redisClient = () => {
     if (process.env.REDIS_PORT && process.env.REDIS_HOST && process.env.REDIS_PASSWORD) {
-        console.log("Redis connect success")
+        console.log("Redis connectting...")
         return {
             port: +process.env.REDIS_PORT,
             host: process.env.REDIS_HOST,
