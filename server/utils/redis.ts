@@ -1,9 +1,10 @@
 import { Redis } from "ioredis"
 require("dotenv").config()
 
-const redisClient = () => {
+const redisClient =  () => {
+    console.log("Redis connectting...")
     if (process.env.REDIS_PORT && process.env.REDIS_HOST && process.env.REDIS_PASSWORD) {
-        console.log("Redis connectting...")
+        console.log("Redis connected")
         return {
             port: +process.env.REDIS_PORT,
             host: process.env.REDIS_HOST,
