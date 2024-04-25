@@ -106,24 +106,24 @@ export const getSingleCourse = catchAsyncError(
 export const getAllCourses = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const isCacheExist = await redis.get("allCourses")
+            // const isCacheExist = await redis.get("allCourses")
 
-            if (isCacheExist) {
-                const courses = JSON.parse(isCacheExist)
-                return res.status(200).json({
-                    success: true,
-                    courses
-                })
-            } else {
-                const courses = await CourseModel.find().select(
-                    "-courseData.videlUrl -courseData.suggestion -courseData.questions -courseData.links"
-                )
-                await redis.set("allCourses", JSON.stringify(courses))
-                res.status(200).json({
-                    success: true,
-                    courses
-                })
-            }
+            // if (isCacheExist) {
+            //     const courses = JSON.parse(isCacheExist)
+            //     return res.status(200).json({
+            //         success: true,
+            //         courses
+            //     })
+            // } else {
+            const courses = await CourseModel.find().select(
+                "-courseData.videlUrl -courseData.suggestion -courseData.questions -courseData.links"
+            )
+            // await redis.set("allCourses", JSON.stringify(courses), "EX", 60 * 5)
+            res.status(200).json({
+                success: true,
+                courses
+            })
+            // }
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 500))
         }
@@ -433,7 +433,7 @@ export const generateVideoUrl = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { videoId } = req.body
-            
+
             const response = await axios.post(
                 `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
                 { ttl: 300 },
@@ -445,7 +445,7 @@ export const generateVideoUrl = catchAsyncError(
                     }
                 }
             )
-            
+
             res.json(response.data)
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
