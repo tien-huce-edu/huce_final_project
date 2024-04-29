@@ -29,6 +29,7 @@ const CourseReview: FC<Props> = ({
   const createCourse = () => {
     handleCourseCreate();
   };
+  console.log(courseData)
   return (
     <div className="w-[90%] m-auto py-5 mb-5">
       <div className="w-full relative">
@@ -45,7 +46,7 @@ const CourseReview: FC<Props> = ({
               : courseData?.price.toLocaleString() + "vnđ"}
           </h1>
           <h5 className="pl-3 text-[20px] mt-2 line-through opacity-80">
-            {courseData?.estimatePrice.toLocaleString()}vnđ
+            {(+courseData?.estimatePrice).toLocaleString()}vnđ
           </h5>
           <h4 className="pl-5 pt-4 text-[22px]">{discountPercentenge}% Off</h4>
         </div>
