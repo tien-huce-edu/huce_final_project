@@ -104,7 +104,7 @@ const CourseInfomation: FC<Props> = ({
               required
               value={courseInfo.price}
               onChange={(e: any) =>
-                setCourseInfo({ ...courseInfo, price: e.target.value })
+                setCourseInfo({ ...courseInfo, price: +e.target.value })
               }
               id="price"
               placeholder="29"
@@ -121,7 +121,7 @@ const CourseInfomation: FC<Props> = ({
               name=""
               value={courseInfo.estimatedPrice}
               onChange={(e: any) =>
-                setCourseInfo({ ...courseInfo, estimatedPrice: e.target.value })
+                setCourseInfo({ ...courseInfo, estimatedPrice: +e.target.value })
               }
               id="price"
               placeholder="79"
