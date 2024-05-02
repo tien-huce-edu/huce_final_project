@@ -1,34 +1,33 @@
 "use client";
-import { FC, useEffect, useState } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { useLogOutQuery } from "@/redux/features/auth/authApi";
 import { Box, IconButton, Typography } from "@mui/material";
+import { signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { FC, useEffect, useState } from "react";
+import { Menu, MenuItem, ProSidebar } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
+import { useSelector } from "react-redux";
+import avatartDefault from "../../../../public/assets/avatardefault.jpeg";
 import {
-  HomeOutlinedIcon,
-  ArrowForwardIosIcon,
   ArrowBackIosIcon,
-  PeopleOutlinedIcon,
-  ReceiptOutlinedIcon,
+  ArrowForwardIosIcon,
   BarChartOutlinedIcon,
-  MapOutlinedIcon,
+  ExitToAppIcon,
   GroupsIcon,
+  HomeOutlinedIcon,
+  ManageHistoryIcon,
+  MapOutlinedIcon,
   OndemandVideoIcon,
+  PeopleOutlinedIcon,
+  QuizIcon,
+  ReceiptOutlinedIcon,
   VideoCallIcon,
   WebIcon,
-  QuizIcon,
   WysiwygIcon,
-  ManageHistoryIcon,
-  SettingsIcon,
-  ExitToAppIcon,
 } from "./Icon";
-import avatarDefault from "@/public/assets/image/avatar.jpg";
-import { useSelector } from "react-redux";
-import Link from "next/link";
-import Image from "next/image";
-import { useTheme } from "next-themes";
-import { useLogOutQuery } from "@/redux/features/auth/authApi";
-import { signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 interface itemProps {
   title: string;
@@ -39,10 +38,14 @@ interface itemProps {
 }
 
 const Item: FC<itemProps> = ({ title, to, icon, selected, setSelected }) => {
+  const actionSelectedItem = () => {
+    setSelected(title);
+    localStorage.setItem("selected", title);
+  };
   return (
     <MenuItem
       active={selected === title}
-      onClick={() => setSelected(title)}
+      onClick={() => actionSelectedItem()}
       icon={icon}
     >
       <Typography className="!text-[16px] !font-Poppins">{title}</Typography>
@@ -60,7 +63,13 @@ const Sidebar = () => {
   const { theme, setTheme } = useTheme();
   const {} = useLogOutQuery(undefined, { skip: !logout ? true : false });
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const selected = localStorage.getItem("selected");
+    if (selected) {
+      setSelected(selected);
+    }
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return null;
@@ -107,7 +116,7 @@ const Sidebar = () => {
           left: 0,
           height: "100vh",
           zIndex: 99999999999999,
-          width: isCollapsed ? "0vh" : "15%",
+          width: isCollapsed ? "0vh" : "30vh",
         }}
       >
         <Menu iconShape="square">
@@ -148,7 +157,7 @@ const Sidebar = () => {
                   alt="profile-user"
                   width={100}
                   height={100}
-                  src={user.avatar ? user.avatar.url : avatarDefault}
+                  src={user.avatar ? user.avatar.url : avatartDefault}
                   className="w-[80px] h-[80px] rounded-full cursor-pointer"
                   style={{
                     cursor: "pointer",
