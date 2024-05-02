@@ -10,7 +10,8 @@ import {
     getSingleCourse,
     uploadCourse,
     deleteCourse,
-    generateVideoUrl
+    generateVideoUrl,
+    getAdminAllCourse
 } from "../controllers/course.controller"
 import { authorizeRoles, isAuthenticated } from "../middleware/auth"
 import { updateAccessToken } from "../controllers/users.controller"
@@ -35,6 +36,8 @@ courseRouter.put(
 courseRouter.get("/get-course/:id", getSingleCourse)
 
 courseRouter.get("/get-courses", getAllCourses)
+
+courseRouter.get("/get-admin-courses", isAuthenticated, authorizeRoles("admin"), getAdminAllCourse)
 
 courseRouter.get("/get-course-content/:id", updateAccessToken, isAuthenticated, getCourseByUser)
 
