@@ -9,6 +9,7 @@ type Props = {
   setActive: (active: number) => void;
   courseData: any;
   handleCourseCreate: any;
+  isEdit?: boolean;
 };
 
 const CourseReview: FC<Props> = ({
@@ -16,6 +17,7 @@ const CourseReview: FC<Props> = ({
   handleCourseCreate,
   active,
   setActive,
+  isEdit,
 }) => {
   const discountPercentenge = Math.floor(
     ((courseData?.estimatePrice - courseData?.price) /
@@ -23,13 +25,14 @@ const CourseReview: FC<Props> = ({
       100,
   );
 
+  console.log(courseData);
   const prevButton = () => {
     setActive(active - 1);
   };
   const createCourse = () => {
     handleCourseCreate();
   };
-  console.log(courseData)
+  console.log(courseData);
   return (
     <div className="w-[90%] m-auto py-5 mb-5">
       <div className="w-full relative">
@@ -41,12 +44,10 @@ const CourseReview: FC<Props> = ({
         </div>
         <div className="flex items-center">
           <h1 className="pt-5 text-[25px]">
-            {courseData?.price === 0
-              ? "Free"
-              : courseData?.price.toLocaleString() + "vnđ"}
+            {courseData?.price === 0 ? "Free" : courseData?.price + "vnđ"}
           </h1>
           <h5 className="pl-3 text-[20px] mt-2 line-through opacity-80">
-            {(+courseData?.estimatePrice).toLocaleString()}vnđ
+            {courseData?.estimatePrice}vnđ
           </h5>
           <h4 className="pl-5 pt-4 text-[22px]">{discountPercentenge}% Off</h4>
         </div>
@@ -54,7 +55,7 @@ const CourseReview: FC<Props> = ({
           <div
             className={`${styles.button} !w-[180px] my-3 font-Poppins !bg-[crimson] cursor-not-allowed`}
           >
-            {courseData?.price.toLocaleString()} vnđ
+            {courseData?.price} vnđ
           </div>
         </div>
         <div className="flex items-center">
@@ -78,7 +79,7 @@ const CourseReview: FC<Props> = ({
       </div>
       <div className="w-full">
         <div className="w-full 800px:pr-5">
-          <h1 className="text-[64px] font-Poppins font-[600]">
+          <h1 className="text-[32px] font-Poppins font-[600]">
             {courseData?.name}
           </h1>
           <div className="flex items-center justify-between pt-3">
@@ -138,7 +139,7 @@ const CourseReview: FC<Props> = ({
           className="w-full 800px:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 cursor-pointer"
           onClick={() => createCourse()}
         >
-          Create
+          {isEdit ? "Update" : "Create"}
         </div>
       </div>
     </div>
