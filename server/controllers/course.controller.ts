@@ -41,8 +41,10 @@ export const editCourse = catchAsyncError(
         try {
             const data = req.body
             const thumbnail = data.thumbnail
-            if (thumbnail) {
-                await cloudinary.v2.uploader.destroy(data.thumbnail.public_id)
+            const courseId = req.params.id
+            const courseData = (await CourseModel.findById(courseId)) as any
+            if (thumbnail && !thumbnail.startsWith("https")) {
+                // await cloudinary.v2.uploader.destroy(data.thumbnail.public_id)
                 const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
                     folder: "course"
                 })
@@ -51,7 +53,13 @@ export const editCourse = catchAsyncError(
                     public_id: myCloud.public_id
                 }
             }
-            const courseId = req.params.id
+
+            if (thumbnail.startsWith("https")) {
+                data.thumbnail = {
+                    url: thumbnail,
+                    public_id: courseData.thumbnail.public_id
+                }
+            }
             const course = await CourseModel.findByIdAndUpdate(
                 courseId,
                 { $set: data },
@@ -106,15 +114,6 @@ export const getSingleCourse = catchAsyncError(
 export const getAllCourses = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // const isCacheExist = await redis.get("allCourses")
-
-            // if (isCacheExist) {
-            //     const courses = JSON.parse(isCacheExist)
-            //     return res.status(200).json({
-            //         success: true,
-            //         courses
-            //     })
-            // } else {
             const courses = await CourseModel.find().select(
                 "-courseData.videlUrl -courseData.suggestion -courseData.questions -courseData.links"
             )
@@ -394,7 +393,7 @@ export const addReplyToReview = catchAsyncError(
 
 // get all courses -- only for admin
 
-export const getAllUsers = catchAsyncError(
+export const getAdminAllCourse = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             getAllCoursesService(res)

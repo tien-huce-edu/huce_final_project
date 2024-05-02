@@ -1,10 +1,11 @@
-"use client"
+"use client";
 import { styles } from "@/app/styles/style";
 import React, { FC, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineDelete, AiOutlinePlusCircle } from "react-icons/ai";
 import { BsLink45Deg, BsPencil } from "react-icons/bs";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import CourseData from "./CourseData";
 
 type Props = {
   active: number;
@@ -118,6 +119,7 @@ const CourseContent: FC<Props> = ({
       handleCourseSubmit();
     }
   };
+  console.log(CourseData);
 
   return (
     <div className="w-[80%] m-auto mt-24 p-3">
