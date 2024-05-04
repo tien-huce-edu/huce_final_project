@@ -154,18 +154,19 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
       {isLoading ? (
         <Loader />
       ) : (
-        <Box m="20px">
-          <div className="w-full flex justify-end">
+        <Box p="20px">
+          <div className="w-full  flex justify-end">
             <div
-              className={`${styles.button} !w-[200px] dark:bg-[#0000007b] dark:border dark:border-[#ffffff6c]`}
+              className={`${styles.button} !w-[200px] dark:bg-[#3ccba0] rounded-sm dark:border-[#ffffff6c]`}
               onClick={() => setActive(!active)}
             >
               Add Member
             </div>
           </div>
           <Box
-            m="40px 0 0 0"
-            height="80vh"
+            mt="40px"
+            className="1000px:ml-20"
+            height="70vh"
             sx={{
               "& .MuiDataGrid-root": {
                 border: "none",
@@ -215,7 +216,10 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
               },
             }}
           >
-            <DataGrid checkboxSelection rows={rows} columns={columns} />
+            <DataGrid 
+            // checkboxSelection 
+            rows={rows} 
+            columns={columns} />
           </Box>
           {active && (
             <Modal
