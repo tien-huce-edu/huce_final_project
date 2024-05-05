@@ -1,8 +1,7 @@
-"use client";
+import DashboardHero from "@/app/components/Admin/DashboardHero";
 import AdminSidebar from "@/app/components/Admin/Sidebar/AdminSidebar";
 import Heading from "@/app/utils/Heading";
-import CreateCourse from "@/app/components/Admin/Course/CreateCourse";
-import DashboardHero from "@/app/components/Admin/DashboardHero";
+import CourseAnalytics from "../../components/Admin/Analytics/CourseAnalytics";
 
 type Props = {};
 
@@ -11,8 +10,8 @@ const page = (props: Props) => {
     <div>
       <Heading
         title="Elearning - Admin"
-        description="Elearning là một nền tảng dành cho sinh viên và giảng viên trao đổi việc giảng dạy và học tập online"
-        keywords="Programing, Elearning, Online, Study, Teaching, Learning"
+        description="Admin page for Elearning platform"
+        keywords="Elearning, Admin, Courses, Analytics"
       />
       <div className="flex">
         <div className="1500px:w-[16%] w-1/5">
@@ -20,7 +19,7 @@ const page = (props: Props) => {
         </div>
         <div className="w-[85%]">
           <DashboardHero />
-          <CreateCourse />
+          <CourseAnalytics />
         </div>
       </div>
     </div>

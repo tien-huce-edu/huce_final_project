@@ -37,6 +37,7 @@ const CreateCourse: FC<Props> = () => {
     estimatedPrice: "",
     tags: "",
     level: "",
+    categories: "",
     demoUrl: "",
     thumbnail: "",
   });
@@ -44,10 +45,11 @@ const CreateCourse: FC<Props> = () => {
   const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
   const [courseContentData, setCourseContentData] = useState([
     {
-      videoSection: "Untitled Section",
-      title: "",
       videoUrl: "",
+      title: "",
       description: "",
+      videoSection: "Untitled Section",
+      videoLength: "",
       links: [
         {
           title: "",
@@ -72,6 +74,7 @@ const CreateCourse: FC<Props> = () => {
       title: content.title,
       description: content.description,
       videoSection: content.videoSection,
+      videoLength: content.videoLength,
       links: content.links.map((link) => ({
         title: link.title,
         url: link.url,
@@ -86,6 +89,7 @@ const CreateCourse: FC<Props> = () => {
       estimatePrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
       thumbnail: courseInfo.thumbnail,
+      categories: courseInfo.categories,
       level: courseInfo.level,
       demoUrl: courseInfo.demoUrl,
       totalVideos: courseContentData.length,
@@ -124,7 +128,7 @@ const CreateCourse: FC<Props> = () => {
             active={active}
             setActive={setActive}
           />
-        )}{" "}
+        )}
         {active === 2 && (
           <CourseContent
             active={active}

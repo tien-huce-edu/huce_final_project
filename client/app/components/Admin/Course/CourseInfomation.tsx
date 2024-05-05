@@ -1,6 +1,7 @@
-"use client"
+"use client";
 import { styles } from "@/app/styles/style";
-import { FC, useState } from "react";
+import { useGetHeroDataQuery } from "@/redux/features/layout/layoutApi";
+import { FC, useEffect, useState } from "react";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 
 type Props = {
@@ -17,6 +18,14 @@ const CourseInfomation: FC<Props> = ({
   setActive,
 }) => {
   const [dragging, setDragging] = useState(false);
+  const { data } = useGetHeroDataQuery("Categories");
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (data) {
+      setCategories(data.layout.categories);
+    }
+  }, [data]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -121,7 +130,10 @@ const CourseInfomation: FC<Props> = ({
               name=""
               value={courseInfo.estimatedPrice}
               onChange={(e: any) =>
-                setCourseInfo({ ...courseInfo, estimatedPrice: +e.target.value })
+                setCourseInfo({
+                  ...courseInfo,
+                  estimatedPrice: +e.target.value,
+                })
               }
               id="price"
               placeholder="79"
@@ -132,8 +144,8 @@ const CourseInfomation: FC<Props> = ({
         </div>
         <br />
         <div className="w-full flex justify-between">
-          <div className="w-[%]">
-            <label className={`${styles.label}`} htmlFor="email">
+          <div className="w-[45%]">
+            <label className={`${styles.label} w-[50%]`} htmlFor="email">
               Thẻ khoá học
             </label>
             <input
@@ -150,7 +162,7 @@ const CourseInfomation: FC<Props> = ({
             ${styles.input}`}
             />
           </div>
-          {/* <div className="w-[50%]">
+          <div className="w-[50%]">
             <label className={`${styles.label} w-[50%]`}>
               Course Categories
             </label>
@@ -158,15 +170,15 @@ const CourseInfomation: FC<Props> = ({
               name=""
               id=""
               className="w-full text-black dark:text-white bg-transparent border rounded h-[40px] px-2 outline-none mt-[10px] font-Poppins"
-              value={courseInfo.category}
+              value={courseInfo.categories}
               onChange={(e: any) =>
-                setCourseInfo({ ...courseInfo, category: e.target.value })
+                setCourseInfo({ ...courseInfo, categories: e.target.value })
               }
             >
               <option className="bg-[#1c2024]" value="">
                 Select Category
-              </option> */}
-              {/* {categories &&
+              </option>
+              {categories &&
                 categories.map((item: any) => (
                   <option
                     className="bg-[#1c2024]"
@@ -175,9 +187,9 @@ const CourseInfomation: FC<Props> = ({
                   >
                     {item.title}
                   </option>
-                ))} */}
-            {/* </select>
-          </div> */}
+                ))}
+            </select>
+          </div>
         </div>
         <br />
         <div className="w-full flex justify-between">
