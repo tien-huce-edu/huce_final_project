@@ -44,7 +44,7 @@ export const createLayout = catchAsyncError(
                 )
                 await LayoutModel.create({ type: "FAQ", faq: faqItems })
             }
-            if (type === "Category") {
+            if (type === "Categories") {
                 const { categories } = req.body
                 const categoriesItems = await Promise.all(
                     categories.map(async (item: any) => {
@@ -53,7 +53,7 @@ export const createLayout = catchAsyncError(
                         }
                     })
                 )
-                await LayoutModel.create({ type: "Category", categories: categoriesItems })
+                await LayoutModel.create({ type: "Categories", categories: categoriesItems })
             }
 
             res.status(200).json({
@@ -113,9 +113,9 @@ export const editLayout = catchAsyncError(
                 )
                 await LayoutModel.findByIdAndUpdate(FaqItem?._id, { type: "FAQ", faq: faqItems })
             }
-            if (type === "Category") {
+            if (type === "Categories") {
                 const { categories } = req.body
-                const CategoriesItem = await LayoutModel.findOne({ type: "Category" })
+                const CategoriesItem = await LayoutModel.findOne({ type: "Categories" })
 
                 const categoriesItems = await Promise.all(
                     categories.map(async (item: any) => {
@@ -125,7 +125,7 @@ export const editLayout = catchAsyncError(
                     })
                 )
                 await LayoutModel.findByIdAndUpdate(CategoriesItem?._id, {
-                    type: "Category",
+                    type: "Categories",
                     categories: categoriesItems
                 })
             }
