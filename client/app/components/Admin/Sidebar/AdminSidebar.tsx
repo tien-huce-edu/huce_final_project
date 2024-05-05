@@ -135,7 +135,13 @@ const Sidebar = () => {
                 alignItems="center"
                 ml="10px"
               >
-                <Link href="/" className="block">
+                <Link
+                  href="/"
+                  className="block"
+                  onClick={() => {
+                    localStorage.removeItem("selected");
+                  }}
+                >
                   <h3 className="text-[25px] font-Poppins uppercase dark:text-white text-black">
                     ELearning
                   </h3>
