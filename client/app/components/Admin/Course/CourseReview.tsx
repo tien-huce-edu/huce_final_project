@@ -25,7 +25,6 @@ const CourseReview: FC<Props> = ({
       100,
   );
 
-  console.log(courseData);
   const prevButton = () => {
     setActive(active - 1);
   };
