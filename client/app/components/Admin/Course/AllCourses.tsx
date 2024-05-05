@@ -5,7 +5,7 @@ import {
   useGetAllCoursesQuery,
 } from "@/redux/features/courses/coursesApi";
 import { Box, Button, Modal } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -163,7 +163,7 @@ const AllCourses = (props: Props) => {
               },
             }}
           >
-            <DataGrid checkboxSelection rows={rows} columns={columns} />
+            <DataGrid checkboxSelection rows={rows} columns={columns}  components={ { Toolbar: GridToolbar }}/>
           </Box>
           {open && (
             <Modal

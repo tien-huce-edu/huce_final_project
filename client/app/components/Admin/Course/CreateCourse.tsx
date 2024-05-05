@@ -89,6 +89,7 @@ const CreateCourse: FC<Props> = () => {
       estimatePrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
       thumbnail: courseInfo.thumbnail,
+      categories: courseInfo.categories,
       level: courseInfo.level,
       demoUrl: courseInfo.demoUrl,
       totalVideos: courseContentData.length,

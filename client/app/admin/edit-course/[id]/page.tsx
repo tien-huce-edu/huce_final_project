@@ -1,6 +1,6 @@
 "use client";
 import EditCourse from "@/app/components/Admin/Course/EditCourse";
-import DashboardHeader from "@/app/components/Admin/DashboardHeader";
+import DashboardHero from "@/app/components/Admin/DashboardHero";
 import AdminSidebar from "@/app/components/Admin/Sidebar/AdminSidebar";
 import Heading from "@/app/utils/Heading";
 
@@ -21,7 +21,7 @@ const page = (props: any) => {
           <AdminSidebar />
         </div>
         <div className="w-[85%]">
-          <DashboardHeader />
+          <DashboardHero />
           {/* <CreateCourse /> */}
           <EditCourse id={id}/>
         </div>
