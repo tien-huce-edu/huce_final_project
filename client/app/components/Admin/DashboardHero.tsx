@@ -1,12 +1,18 @@
-
+"use client";
+import { FC, useState } from "react";
+import DashboardWidgets from "../../components/Admin/Widgets/DashboardWidgets";
 import DashboardHeader from "./DashboardHeader";
 
-type Props = {};
+type Props = {
+  isDashboard?: boolean;
+};
 
-const DashboardHero = (props: Props) => {
+const DashboardHero: FC<Props> = ({isDashboard}) => {
+  const [open, setOpen] = useState(false);
   return (
     <div>
-      <DashboardHeader />
+      <DashboardHeader open={open} setOpen={setOpen}/>
+      {isDashboard && <DashboardWidgets open={open} />}
     </div>
   );
 };
