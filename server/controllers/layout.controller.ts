@@ -15,16 +15,20 @@ export const createLayout = catchAsyncError(
 
             if (type === "Banner") {
                 const { image, title, subTitle } = req.body
+                console.log(title, subTitle)
                 const myCloud = await cloudinary.v2.uploader.upload(image, {
                     folder: "layout"
                 })
                 const banner = {
-                    image: {
-                        public_id: myCloud.public_id,
-                        url: myCloud.secure_url
-                    },
-                    title,
-                    subTitle
+                    type: "Banner",
+                    banner: {
+                        image: {
+                            public_id: myCloud.public_id,
+                            url: myCloud.secure_url
+                        },
+                        title,
+                        subTitle
+                    }
                 }
                 await LayoutModel.create(banner)
             }
@@ -40,7 +44,7 @@ export const createLayout = catchAsyncError(
                 )
                 await LayoutModel.create({ type: "FAQ", faq: faqItems })
             }
-            if (type === "Category") {
+            if (type === "Categories") {
                 const { categories } = req.body
                 const categoriesItems = await Promise.all(
                     categories.map(async (item: any) => {
@@ -49,7 +53,7 @@ export const createLayout = catchAsyncError(
                         }
                     })
                 )
-                await LayoutModel.create({ type: "Category", categories: categoriesItems })
+                await LayoutModel.create({ type: "Categories", categories: categoriesItems })
             }
 
             res.status(200).json({
@@ -68,27 +72,34 @@ export const editLayout = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { type } = req.body
-
             if (type === "Banner") {
-                // find and destroy old image
                 const bannerData: any = await LayoutModel.findOne({ type: "Banner" })
-                await cloudinary.v2.uploader.destroy(bannerData.image.public_id)
 
-                // upload new image to cloudinary
                 const { image, title, subTitle } = req.body
-                const myCloud = await cloudinary.v2.uploader.upload(image, {
-                    folder: "layout"
-                })
+
+                const data = image.startsWith("https")
+                    ? bannerData
+                    : await cloudinary.v2.uploader.upload(image, {
+                          folder: "layout"
+                      })
+
                 const banner = {
+                    type: "Banner",
                     image: {
-                        public_id: myCloud.public_id,
-                        url: myCloud.secure_url
+                        public_id: image.startsWith("https")
+                            ? bannerData.banner.image.public_id
+                            : data?.public_id,
+                        url: image.startsWith("https")
+                            ? bannerData.banner.image.url
+                            : data?.secure_url
                     },
                     title,
                     subTitle
                 }
+
                 await LayoutModel.findByIdAndUpdate(bannerData._id, { banner })
             }
+
             if (type === "FAQ") {
                 const { faq } = req.body
                 const FaqItem = await LayoutModel.findOne({ type: "FAQ" })
@@ -102,9 +113,9 @@ export const editLayout = catchAsyncError(
                 )
                 await LayoutModel.findByIdAndUpdate(FaqItem?._id, { type: "FAQ", faq: faqItems })
             }
-            if (type === "Category") {
+            if (type === "Categories") {
                 const { categories } = req.body
-                const CategoriesItem = await LayoutModel.findOne({ type: "Category" })
+                const CategoriesItem = await LayoutModel.findOne({ type: "Categories" })
 
                 const categoriesItems = await Promise.all(
                     categories.map(async (item: any) => {
@@ -114,7 +125,7 @@ export const editLayout = catchAsyncError(
                     })
                 )
                 await LayoutModel.findByIdAndUpdate(CategoriesItem?._id, {
-                    type: "Category",
+                    type: "Categories",
                     categories: categoriesItems
                 })
             }
