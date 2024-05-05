@@ -19,7 +19,7 @@ const page = (props: Props) => {
           <AdminSidebar />
         </div>
         <div className="w-[85%] h-screen">
-          <DashboardHeader />
+          <DashboardHero />
           <EditCategories/>
         </div>
       </div>

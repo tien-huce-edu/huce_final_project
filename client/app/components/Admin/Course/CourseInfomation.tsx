@@ -170,9 +170,9 @@ const CourseInfomation: FC<Props> = ({
               name=""
               id=""
               className="w-full text-black dark:text-white bg-transparent border rounded h-[40px] px-2 outline-none mt-[10px] font-Poppins"
-              value={courseInfo.category}
+              value={courseInfo.categories}
               onChange={(e: any) =>
-                setCourseInfo({ ...courseInfo, category: e.target.value })
+                setCourseInfo({ ...courseInfo, categories: e.target.value })
               }
             >
               <option className="bg-[#1c2024]" value="">

@@ -165,7 +165,7 @@ const AllCourses: FC<Props> = ({ isTeam }) => {
           </div>
           <Box
             mt="40px"
-            className="1000px:ml-20"
+            // className="1000px:ml-20"
             height="70vh"
             sx={{
               "& .MuiDataGrid-root": {
