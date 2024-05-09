@@ -6,7 +6,7 @@ services:
             - mongo
         ports:
             - "27017:27017"
-        container_name: dkrcomp-mongo-final-huce
+        container_name: mongo-final-huce
         restart: always
         logging:
             options:
@@ -21,6 +21,7 @@ services:
         restart: always
         ports:
             - "6379:6379"
+        container_name: redis-final-huce
         command: redis-server --save 20 1 --loglevel warning --requirepass tienhg2001
         volumes:
             - cache:/data
