@@ -1,52 +1,51 @@
-"use client";
 import { styles } from "@/app/styles/style";
 import React, { FC, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { AiOutlineDelete, AiOutlinePlusCircle } from "react-icons/ai";
 import { BsLink45Deg, BsPencil } from "react-icons/bs";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-
+import _ from "lodash";
 type Props = {
   active: number;
   setActive: (active: number) => void;
   courseContentData: any;
   setCourseContentData: (courseContentData: any) => void;
-  handleSubmit: () => void;
+  handleSubmit: any;
 };
 
 const CourseContent: FC<Props> = ({
-  active,
-  setActive,
   courseContentData,
   setCourseContentData,
-  handleSubmit: handleCourseSubmit,
+  active,
+  setActive,
+  handleSubmit: handlleCourseSubmit,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(
     Array(courseContentData.length).fill(false),
   );
 
-  const [activeSection, setActiveSection] = useState(0);
+  const [activeSection, setActiveSection] = useState(1);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
   };
 
   const handleCollapseToggle = (index: number) => {
-    const updatedCollapse = [...isCollapsed];
-    updatedCollapse[index] = !updatedCollapse[index];
-    setIsCollapsed(updatedCollapse);
+    const updatedCollasped = [...isCollapsed];
+    updatedCollasped[index] = !updatedCollasped[index];
+    setIsCollapsed(updatedCollasped);
   };
 
   const handleRemoveLink = (index: number, linkIndex: number) => {
-    const updatedData = [...courseContentData];
+    const updatedData = _.cloneDeep(courseContentData);
     updatedData[index].links.splice(linkIndex, 1);
     setCourseContentData(updatedData);
   };
 
   const handleAddLink = (index: number) => {
-    const updatedata = [...courseContentData];
-    updatedata[index].links.push({ title: "", url: "" });
-    setCourseContentData(updatedata);
+    const updatedData = _.cloneDeep(courseContentData);
+    updatedData[index].links.push({ title: "", url: "" });
+    setCourseContentData(updatedData);
   };
 
   const newContentHandler = (item: any) => {
@@ -55,16 +54,18 @@ const CourseContent: FC<Props> = ({
       item.description === "" ||
       item.videoUrl === "" ||
       item.links[0].title === "" ||
-      item.links[0].url === ""
+      item.links[0].url === "" ||
+      item.videoLength === ""
     ) {
-      toast.error("Please fill all the fields");
+      toast.error("Please fill all the fields first!");
     } else {
       let newVideoSection = "";
+
       if (courseContentData.length > 0) {
         const lastVideoSection =
           courseContentData[courseContentData.length - 1].videoSection;
 
-        // use the last videoSection
+        // use the last videoSection if available, else use user input
         if (lastVideoSection) {
           newVideoSection = lastVideoSection;
         }
@@ -74,8 +75,10 @@ const CourseContent: FC<Props> = ({
         title: "",
         description: "",
         videoSection: newVideoSection,
+        videoLength: "",
         links: [{ title: "", url: "" }],
       };
+
       setCourseContentData([...courseContentData, newContent]);
     }
   };
@@ -88,13 +91,14 @@ const CourseContent: FC<Props> = ({
       courseContentData[courseContentData.length - 1].links[0].title === "" ||
       courseContentData[courseContentData.length - 1].links[0].url === ""
     ) {
-      toast.error("Hãy nhập tất cả các ô  trước khi tạo section mới");
+      toast.error("Please fill all the fields first!");
     } else {
       setActiveSection(activeSection + 1);
       const newContent = {
         videoUrl: "",
         title: "",
         description: "",
+        videoLength: "",
         videoSection: `Untitled Section ${activeSection}`,
         links: [{ title: "", url: "" }],
       };
@@ -106,33 +110,39 @@ const CourseContent: FC<Props> = ({
     setActive(active - 1);
   };
 
+  console.log(courseContentData[0]);
   const handleOptions = () => {
     if (
       courseContentData[courseContentData.length - 1].title === "" ||
       courseContentData[courseContentData.length - 1].description === "" ||
-      courseContentData[courseContentData.length - 1].videoUrl === ""
+      courseContentData[courseContentData.length - 1].videoUrl === "" ||
+      courseContentData[courseContentData.length - 1].links[0].title === "" ||
+      courseContentData[courseContentData.length - 1].links[0].url === ""
     ) {
-      toast.error("Một Section không thể để trống");
+      toast.error("section can't be empty!");
     } else {
       setActive(active + 1);
-      handleCourseSubmit();
+      handlleCourseSubmit();
     }
   };
 
   return (
-    <div className="w-[80%] m-auto mt-24 p-3">
+    <div className="w-[100%] 800px:w-[80%] m-auto mt-15 800px:mt-24  p-3">
       <form onSubmit={handleSubmit}>
-        {courseContentData.map((item: any, index: number) => {
+        {courseContentData?.map((item: any, index: number) => {
           const showSectionInput =
             index === 0 ||
             item.videoSection !== courseContentData[index - 1].videoSection;
+
           return (
             <>
               <div
                 className={`w-full bg-[#cdc8c817] p-4 ${
                   showSectionInput ? "mt-10" : "mb-0"
                 }`}
+                key={index}
               >
+                {/* Untitled section */}
                 {showSectionInput && (
                   <>
                     <div className="flex w-full items-center">
@@ -141,11 +151,12 @@ const CourseContent: FC<Props> = ({
                         className={`text-[20px] ${
                           item.videoSection === "Untitled Section"
                             ? "w-[170px]"
-                            : "w-max"
+                            : "w-min"
                         } font-Poppins cursor-pointer dark:text-white text-black bg-transparent outline-none`}
                         value={item.videoSection}
                         onChange={(e) => {
-                          const updatedData = [...courseContentData];
+                          const updatedData = _.cloneDeep(courseContentData);
+                          console.log(updatedData);
                           updatedData[index].videoSection = e.target.value;
                           setCourseContentData(updatedData);
                         }}
@@ -155,6 +166,7 @@ const CourseContent: FC<Props> = ({
                     <br />
                   </>
                 )}
+
                 <div className="flex w-full items-center justify-between my-0">
                   {isCollapsed[index] ? (
                     <>
@@ -163,12 +175,14 @@ const CourseContent: FC<Props> = ({
                           {index + 1}. {item.title}
                         </p>
                       ) : (
-                        <div></div>
+                        <></>
                       )}
                     </>
                   ) : (
                     <div></div>
                   )}
+
+                  {/* // arrow button for collasped video content */}
                   <div className="flex items-center">
                     <AiOutlineDelete
                       className={`dark:text-white text-[20px] mr-2 text-black ${
@@ -176,7 +190,7 @@ const CourseContent: FC<Props> = ({
                       }`}
                       onClick={() => {
                         if (index > 0) {
-                          const updatedData = [...courseContentData];
+                          const updatedData = _.cloneDeep(courseContentData);
                           updatedData.splice(index, 1);
                           setCourseContentData(updatedData);
                         }
@@ -197,48 +211,52 @@ const CourseContent: FC<Props> = ({
                 {!isCollapsed[index] && (
                   <>
                     <div className="my-3">
-                      <label className={styles.label}>Title</label>
+                      <label className={styles.label}>Video Title</label>
                       <input
                         type="text"
-                        placeholder="Project plan..."
-                        className={styles.input}
+                        placeholder="Project Plan..."
+                        className={`${styles.input}`}
                         value={item.title}
                         onChange={(e) => {
-                          const updatedData = [...courseContentData];
+                          const updatedData = _.cloneDeep(courseContentData);
                           updatedData[index].title = e.target.value;
                           setCourseContentData(updatedData);
                         }}
                       />
                     </div>
-                    <div className="my-3">
-                      <label className={styles.label}>Video url</label>
+                    <div className="mb-3">
+                      <label className={styles.label}>Video Url</label>
                       <input
                         type="text"
                         placeholder="sdder"
-                        className={styles.input}
+                        className={`${styles.input}`}
                         value={item.videoUrl}
                         onChange={(e) => {
-                          const updatedData = [...courseContentData];
+                          const updatedData = _.cloneDeep(courseContentData);
                           updatedData[index].videoUrl = e.target.value;
                           setCourseContentData(updatedData);
                         }}
                       />
                     </div>
-                    <div className="my-3">
-                      <label className={styles.label}>Video Length (in minute)</label>
+                    <div className="mb-3">
+                      <label className={styles.label}>
+                        Video Length (in minutes)
+                      </label>
                       <input
                         type="number"
-                        placeholder="2"
-                        className={styles.input}
+                        placeholder="20"
+                        className={`${styles.input}`}
                         value={item.videoLength}
                         onChange={(e) => {
-                          const updatedData = [...courseContentData];
+                          console.log(item.videoLength);
+                          const updatedData = _.cloneDeep(courseContentData);
                           updatedData[index].videoLength = e.target.value;
                           setCourseContentData(updatedData);
                         }}
                       />
                     </div>
-                    <div className="my-3">
+
+                    <div className="mb-3">
                       <label className={styles.label}>Video Description</label>
                       <textarea
                         rows={8}
@@ -247,22 +265,25 @@ const CourseContent: FC<Props> = ({
                         className={`${styles.input} !h-min py-2`}
                         value={item.description}
                         onChange={(e) => {
-                          const updatedData = [...courseContentData];
+                          const updatedData = _.cloneDeep(courseContentData);
                           updatedData[index].description = e.target.value;
                           setCourseContentData(updatedData);
                         }}
                       />
                       <br />
-                      <br />
                     </div>
-                    {item?.links?.map((link: any, linkIndex: number) => (
+                    {item?.links.map((link: any, linkIndex: number) => (
                       <div className="mb-3 block" key={linkIndex}>
                         <div className="w-full flex items-center justify-between">
                           <label className={styles.label}>
                             Link {linkIndex + 1}
                           </label>
                           <AiOutlineDelete
-                            className={`${linkIndex === 0 ? "cursor-no-drop" : "cursor-pointer"} text-black dark:text-white text-[20px]`}
+                            className={`${
+                              linkIndex === 0
+                                ? "cursor-no-drop"
+                                : "cursor-pointer"
+                            } text-black dark:text-white text-[20px]`}
                             onClick={() =>
                               linkIndex === 0
                                 ? null
@@ -272,32 +293,32 @@ const CourseContent: FC<Props> = ({
                         </div>
                         <input
                           type="text"
-                          placeholder="Source code ... (Link title)"
+                          placeholder="Source Code... (Link title)"
                           className={`${styles.input}`}
                           value={link.title}
                           onChange={(e) => {
-                            const updateData = [...courseContentData];
-                            updateData[index].links[linkIndex].title =
+                            const updatedData = _.cloneDeep(courseContentData);
+                            updatedData[index].links[linkIndex].title =
                               e.target.value;
-                            setCourseContentData(updateData);
+                            setCourseContentData(updatedData);
                           }}
                         />
                         <input
-                          type="text"
-                          placeholder="Source code url ... (Link title)"
-                          className={`${styles.input}`}
+                          type="url"
+                          placeholder="Source Code Url... (Link URL)"
+                          className={`${styles.input} mt-6`}
                           value={link.url}
                           onChange={(e) => {
-                            const updateData = [...courseContentData];
-                            updateData[index].links[linkIndex].url =
+                            const updatedData = _.cloneDeep(courseContentData);
+                            updatedData[index].links[linkIndex].url =
                               e.target.value;
-                            setCourseContentData(updateData);
+                            setCourseContentData(updatedData);
                           }}
                         />
                       </div>
                     ))}
                     <br />
-                    {/* add link btn */}
+                    {/* add link button */}
                     <div className="inline-block mb-4">
                       <p
                         className="flex items-center text-[18px] dark:text-white text-black cursor-pointer"
@@ -329,19 +350,19 @@ const CourseContent: FC<Props> = ({
           className="flex items-center text-[20px] dark:text-white text-black cursor-pointer"
           onClick={() => addNewSection()}
         >
-          <AiOutlinePlusCircle className="mr-2" /> Add New Section
+          <AiOutlinePlusCircle className="mr-2" /> Add new Section
         </div>
       </form>
       <br />
       <div className="w-full flex items-center justify-between">
         <div
-          className="w-full 800px:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 cursor-pointer"
+          className="w-full 800px:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 m-[20px] cursor-pointer"
           onClick={() => prevButton()}
         >
           Prev
         </div>
         <div
-          className="w-full 800px:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 cursor-pointer"
+          className="w-full 800px:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 m-[20px] cursor-pointer"
           onClick={() => handleOptions()}
         >
           Next
