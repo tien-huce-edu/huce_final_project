@@ -18,7 +18,6 @@ const CourseContentList: FC<Props> = (props) => {
     ...new Set<string>(props.data?.map((item: any) => item.videoSection)),
   ];
 
-  console.log(videoSections);
   let totalCount: number = 0; // Total count of videos from previous sections
 
   const toggleSection = (section: string) => {
