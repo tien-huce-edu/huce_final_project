@@ -1,7 +1,7 @@
 "use client";
 import AdminSidebar from "@/app/components/Admin/Sidebar/AdminSidebar";
 import Heading from "@/app/utils/Heading";
-import DashboardHeader from "@/app/components/Admin/DashboardHeader";
+import DashboardHero from "@/app/components/Admin/DashboardHero";
 import EditCategories from "../../components/Admin/Customization/EditCategories";
 
 type Props = {};
@@ -20,7 +20,7 @@ const page = (props: Props) => {
         </div>
         <div className="w-[85%] h-screen">
           <DashboardHero />
-          <EditCategories/>
+          <EditCategories />
         </div>
       </div>
     </div>

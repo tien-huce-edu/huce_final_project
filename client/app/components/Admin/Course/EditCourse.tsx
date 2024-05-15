@@ -1,37 +1,36 @@
 "use client";
+import React, { FC, useEffect, useState } from "react";
+import CourseInfomation from "./CourseInfomation";
+import CourseOptions from "./CourseOptions";
+import CourseData from "./CourseData";
+import CourseContent from "./CourseContent";
+import CoursePreview from "./CourseReview";
 import {
-  useCreateCourseMutation,
   useEditCourseMutation,
   useGetAllCoursesQuery,
 } from "@/redux/features/courses/coursesApi";
-import { redirect, useParams } from "next/navigation";
-import { FC, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import CourseContent from "./CourseContent";
-import CourseData from "./CourseData";
-import CourseInfomation from "./CourseInfomation";
-import CourseOptions from "./CourseOptions";
-import CourseReview from "./CourseReview";
+import { toast } from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 type Props = {
-  id: number;
+  id: string;
 };
 
 const EditCourse: FC<Props> = ({ id }) => {
-  const [editCourse, { isSuccess, error }] = useEditCourseMutation({});
-
-  const { isLoading, data, refetch } = useGetAllCoursesQuery(
+  const [editCourse, { isSuccess, error }] = useEditCourseMutation();
+  const { data, refetch } = useGetAllCoursesQuery(
     {},
     { refetchOnMountOrArgChange: true },
   );
 
-  const editCourseData =
-    data && data.courses.find((course) => course._id === id);
-  console.log(editCourseData);
+  const editCourseData = data && data.courses.find((i: any) => i._id === id);
+  const formattedBenefits = editCourseData.benefits.map((benefit: any) => ({
+    title: benefit.title,
+  }));
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Course update successfully");
+      toast.success("Course Updated successfully");
       redirect("/admin/courses");
     }
     if (error) {
@@ -53,10 +52,11 @@ const EditCourse: FC<Props> = ({ id }) => {
         estimatedPrice: editCourseData?.estimatedPrice,
         tags: editCourseData.tags,
         level: editCourseData.level,
+        categories: editCourseData.categories,
         demoUrl: editCourseData.demoUrl,
         thumbnail: editCourseData?.thumbnail?.url,
       });
-      setBenefits(editCourseData.benefits);
+      setBenefits(formattedBenefits);
       setPrerequisites(editCourseData.prerequisites);
       setCourseContentData(editCourseData.courseData);
     }
@@ -69,61 +69,65 @@ const EditCourse: FC<Props> = ({ id }) => {
     estimatedPrice: "",
     tags: "",
     level: "",
+    categories: "",
     demoUrl: "",
     thumbnail: "",
   });
-  const [benefits, setBenefits] = useState([
-    {
-      title: "",
-    },
-  ]);
-  const [prerequisites, setPrerequisites] = useState([
-    {
-      title: "",
-    },
-  ]);
+  const [benefits, setBenefits] = useState([{ title: "" }]);
+  const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
   const [courseContentData, setCourseContentData] = useState([
     {
-      videoSection: "",
-      title: "",
       videoUrl: "",
+      title: "",
       description: "",
+      videoLength:"",
+      videoSection: "Untitled Section",
       links: [
         {
           title: "",
           url: "",
         },
       ],
-      suggestions: "",
+      suggestion: "",
     },
   ]);
-  const [courseData, setCousreData] = useState({});
+
+  const [courseData, setCourseData] = useState({});
 
   const handleSubmit = async () => {
+    // Format benefits array
     const formattedBenefits = benefits.map((benefit) => ({
       title: benefit.title,
     }));
+
+    // Format prerequisites array
     const formattedPrerequisites = prerequisites.map((prerequisite) => ({
       title: prerequisite.title,
     }));
 
-    const formattedCourseContentData = courseContentData.map((content) => ({
-      videoUrl: content.videoUrl,
-      title: content.title,
-      description: content.description,
-      videoSection: content.videoSection,
-      links: content.links.map((link) => ({
-        title: link.title,
-        url: link.url,
-      })),
-      suggestions: content.suggestions,
-    }));
+    // Format course content array
+    const formattedCourseContentData = courseContentData.map(
+      (courseContent) => ({
+        videoUrl: courseContent.videoUrl,
+        title: courseContent.title,
+        description: courseContent.description,
+        videoLength: courseContent.videoLength,
+        videoSection: courseContent.videoSection,
+        links: courseContent.links.map((link) => ({
+          title: link.title,
+          url: link.url,
+        })),
+        suggestion: courseContent.suggestion,
+      }),
+    );
 
+    //   prepare our data object
     const data = {
       name: courseInfo.name,
       description: courseInfo.description,
+      categories: courseInfo.categories,
       price: courseInfo.price,
-      estimatePrice: courseInfo.estimatedPrice,
+      estimatedPrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
       thumbnail: courseInfo.thumbnail,
       level: courseInfo.level,
@@ -131,15 +135,15 @@ const EditCourse: FC<Props> = ({ id }) => {
       totalVideos: courseContentData.length,
       benefits: formattedBenefits,
       prerequisites: formattedPrerequisites,
-      courseData: formattedCourseContentData,
+      courseContent: formattedCourseContentData,
     };
 
-    setCousreData(data);
+    setCourseData(data);
   };
+
   const handleCourseCreate = async (e: any) => {
     const data = courseData;
-
-    await editCourse({ id, data });
+    await editCourse({ id: editCourseData?._id, data });
   };
 
   return (
@@ -153,6 +157,7 @@ const EditCourse: FC<Props> = ({ id }) => {
             setActive={setActive}
           />
         )}
+
         {active === 1 && (
           <CourseData
             benefits={benefits}
@@ -162,7 +167,8 @@ const EditCourse: FC<Props> = ({ id }) => {
             active={active}
             setActive={setActive}
           />
-        )}{" "}
+        )}
+
         {active === 2 && (
           <CourseContent
             active={active}
@@ -172,8 +178,9 @@ const EditCourse: FC<Props> = ({ id }) => {
             handleSubmit={handleSubmit}
           />
         )}
+
         {active === 3 && (
-          <CourseReview
+          <CoursePreview
             active={active}
             setActive={setActive}
             courseData={courseData}

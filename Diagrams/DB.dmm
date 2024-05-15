@@ -84,7 +84,7 @@
 					"any": "",
 					"id": "1963d2c5-0e21-4d02-abb7-6cb78badc653",
 					"list": false,
-					"name": "estimatePrice",
+					"name": "estimatedPrice",
 					"nn": true,
 					"param": "",
 					"pk": false,
@@ -2141,7 +2141,7 @@
 				"y": 40
 			},
 			"type": "erd",
-			"showEstimatedSize": false,
+			"showestimatedSize": false,
 			"showSchemaContainer": false,
 			"showEmbeddedInParents": true,
 			"showCardinalityCaptions": false,
