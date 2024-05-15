@@ -10,6 +10,7 @@ type Props = {
 };
 
 const CourseCard: FC<Props> = ({ item, isProfile }) => {
+  console.log(item.name, item.estimatedPrice)
   return (
     <Link
       href={!isProfile ? `/course/${item._id}` : `course-access/${item._id}`}
@@ -43,7 +44,7 @@ const CourseCard: FC<Props> = ({ item, isProfile }) => {
               {item.price === 0 ? "Free" : item.price + "$"}
             </h3>
             <h5 className="pl-3 text-[14px] mt-[-5px] line-through opacity-80 text-black dark:text-[#fff]">
-              {item.estimatePrice}$
+              {item.estimatedPrice}$
             </h5>
           </div>
           <div className="flex items-center pb-3">

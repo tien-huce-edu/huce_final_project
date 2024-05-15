@@ -24,7 +24,7 @@ const FAQ = (props: Props) => {
     <div>
       <div className="w-[90%] 800px:w-[80%] m-auto">
         <h1 className={`${styles.tittle} 800px:text-[40px]`}>
-          Frequently Asked Questions
+          Các câu hỏi thường gặp
         </h1>
         <div className="mt-12">
           <dl className="space-y-8">
@@ -40,7 +40,7 @@ const FAQ = (props: Props) => {
                     className="flex items-start justify-between w-full text-left focus:outline-none"
                     onClick={() => toggleQuestion(q._id)}
                   >
-                    <span className="font-medium text-black dark:text-white">
+                    <span className="font-bold text-2xl text-black dark:text-white">
                       {q.question}
                     </span>
                     <span className="ml-6 flex-shrink-0">
