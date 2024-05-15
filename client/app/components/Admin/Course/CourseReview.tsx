@@ -20,8 +20,8 @@ const CourseReview: FC<Props> = ({
   isEdit,
 }) => {
   const discountPercentenge = Math.floor(
-    ((courseData?.estimatePrice - courseData?.price) /
-      courseData?.estimatePrice) *
+    ((courseData?.estimatedPrice - courseData?.price) /
+      courseData?.estimatedPrice) *
       100,
   );
 
@@ -31,7 +31,6 @@ const CourseReview: FC<Props> = ({
   const createCourse = () => {
     handleCourseCreate();
   };
-  console.log(courseData);
   return (
     <div className="w-[90%] m-auto py-5 mb-5">
       <div className="w-full relative">
@@ -46,7 +45,7 @@ const CourseReview: FC<Props> = ({
             {courseData?.price === 0 ? "Free" : courseData?.price + "vnđ"}
           </h1>
           <h5 className="pl-3 text-[20px] mt-2 line-through opacity-80">
-            {courseData?.estimatePrice}vnđ
+            {courseData?.estimatedPrice}vnđ
           </h5>
           <h4 className="pl-5 pt-4 text-[22px]">{discountPercentenge}% Off</h4>
         </div>
