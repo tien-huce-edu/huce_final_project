@@ -17,15 +17,14 @@ const CourseInfomation: FC<Props> = ({
   active,
   setActive,
 }) => {
-  const [dragging, setDragging] = useState(false);
-  const { data } = useGetHeroDataQuery("Categories");
-  const [categories, setCategories] = useState<any[]>([]);
-
+  const { data } = useGetHeroDataQuery("Categories", {});
+  const [categories, setCategories] = useState([]);
   useEffect(() => {
     if (data) {
       setCategories(data.layout.categories);
     }
   }, [data]);
+  const [dragging, setDragging] = useState(false);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -33,10 +32,11 @@ const CourseInfomation: FC<Props> = ({
   };
 
   const handleFileChange = (e: any) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => {
+
+      reader.onload = (e: any) => {
         if (reader.readyState === 2) {
           setCourseInfo({ ...courseInfo, thumbnail: reader.result });
         }
@@ -58,11 +58,13 @@ const CourseInfomation: FC<Props> = ({
   const handleDrop = (e: any) => {
     e.preventDefault();
     setDragging(false);
-    const file = e.dataTransfer.files[0];
+
+    const file = e.dataTransfer.files?.[0];
+
     if (file) {
       const reader = new FileReader();
+
       reader.onload = () => {
-        console.log(reader.result);
         setCourseInfo({ ...courseInfo, thumbnail: reader.result });
       };
       reader.readAsDataURL(file);

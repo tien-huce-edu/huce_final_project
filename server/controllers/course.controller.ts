@@ -1,7 +1,7 @@
 import axios from "axios"
 import cloudinary from "cloudinary"
 import ejs from "ejs"
-import { NextFunction, Request, Response } from "express"
+import e, { NextFunction, Request, Response } from "express"
 import mongoose from "mongoose"
 import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
@@ -87,10 +87,25 @@ export const getSingleCourse = catchAsyncError(
             const isCacheExist = await redis.get(courseId)
 
             if (isCacheExist) {
-                return res.status(200).json({
-                    success: true,
-                    course: JSON.parse(isCacheExist)
-                })
+                const courseInDb = await CourseModel.findById(req.params.id)
+                if (JSON.stringify(courseInDb) === isCacheExist) {
+                    return res.status(200).json({
+                        success: true,
+                        course: JSON.parse(isCacheExist)
+                    })
+                } else {
+                    const course = await CourseModel.findById(req.params.id).select(
+                        "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+                    )
+                    await redis.set(courseId, JSON.stringify(course))
+                    if (!course) {
+                        return next(new ErrorHandler("Không tìm thấy khóa học!", 404))
+                    }
+                    res.status(200).json({
+                        success: true,
+                        course
+                    })
+                }
             } else {
                 const course = await CourseModel.findById(req.params.id).select(
                     "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
@@ -328,7 +343,7 @@ export const addReview = catchAsyncError(
                 avg += item.rating
             })
             if (course) {
-                course.rating = avg / course.reviews.length
+                course.ratings = avg / course.reviews.length
             }
 
             await course?.save()

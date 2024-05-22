@@ -80,7 +80,7 @@ const EditCourse: FC<Props> = ({ id }) => {
       videoUrl: "",
       title: "",
       description: "",
-      videoLength:"",
+      videoLength: "",
       videoSection: "Untitled Section",
       links: [
         {
@@ -135,16 +135,18 @@ const EditCourse: FC<Props> = ({ id }) => {
       totalVideos: courseContentData.length,
       benefits: formattedBenefits,
       prerequisites: formattedPrerequisites,
-      courseContent: formattedCourseContentData,
+      courseData: formattedCourseContentData,
     };
-
     setCourseData(data);
   };
 
   const handleCourseCreate = async (e: any) => {
     const data = courseData;
+    console.log(courseData)
     await editCourse({ id: editCourseData?._id, data });
   };
+
+  console.log(courseContentData)
 
   return (
     <div className="w-full flex min-h-screen">
