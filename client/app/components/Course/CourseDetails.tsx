@@ -3,12 +3,13 @@ import CoursePlayer from "@/app/utils/CoursePlayer";
 import Ratings from "@/app/utils/Ratings";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoCheckmarkDoneOutline, IoCloseOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import CourseContentList from "./CourseContentList";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../Payment/CheckOutForm";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 
 type Props = {
   data: any;
@@ -17,19 +18,20 @@ type Props = {
 };
 
 const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
-  const { user } = useSelector((state: any) => state.auth);
+  const { data: userData ,refetch} = useLoadUserQuery(undefined, {refetchOnMountOrArgChange: true});
+  const user = userData?.user;
   const [open, setOpen] = useState(false);
 
   const discountPercentenge =
     ((data.estimatedPrice - data.price) / data.price) * 100;
   const discountPercentengePrice = discountPercentenge.toFixed(0);
 
-  const isPurchased =
-    user && user?.courses?.find((item: any) => item._id === data.id);
   const handleOrder = (e: any) => {
     setOpen(true);
   };
 
+  const isPurchased =
+    user && user?.courses?.find((item: any) => item._id === data._id);
   return (
     <div>
       <div className="w-[90%] 800px:w-[90%] m-auto py-5">
@@ -114,8 +116,8 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                 <div className="mb-2 800px:mb-[unset]" />
                 <h5 className="text-[25px] font-Poppins text-black dark:text-white">
                   {Number.isInteger(data?.rating)
-                    ? data?.rating.toFixed(1)
-                    : data?.rating.toFixed(2)}{" "}
+                    ? data?.ratings.toFixed(1)
+                    : data?.ratings.toFixed(2)}{" "}
                   Course Rating • {data?.reviews?.length} Reviews
                 </h5>
               </div>
@@ -192,7 +194,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                     className={`${styles.button} !w-[220px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
                     onClick={handleOrder}
                   >
-                    Buy Now {data.price.toLocaleString('en-US')}đ
+                    Buy Now {data.price.toLocaleString("en-US")}đ
                   </div>
                 )}
               </div>
@@ -230,7 +232,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                     stripe={stripePromise}
                     options={{ clientSecret, loader: "auto" }}
                   >
-                    <CheckoutForm setOpen={setOpen} data={data} />
+                    <CheckoutForm setOpen={setOpen} data={data} refetch={refetch}/>
                   </Elements>
                 )}
               </div>

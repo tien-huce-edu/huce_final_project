@@ -17,13 +17,13 @@ type Props = {
   refetch?: any;
 };
 
-const CheckOutForm: FC<Props> = ({ setOpen, data }) => {
+const CheckOutForm: FC<Props> = ({ refetch, setOpen, data }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState("");
   const [createOrder, { data: orderData, error }] = useCreateOrderMutation();
-  const [loadUser, setLoadUser] = useState(false);
-  const {} = useLoadUserQuery({ skip: !loadUser ? false : true });
+  // const [loadUser, setLoadUser] = useState(false);
+  // const {} = useLoadUserQuery({ skip: !loadUser ? false : true });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: any) => {
@@ -45,11 +45,12 @@ const CheckOutForm: FC<Props> = ({ setOpen, data }) => {
   };
 
   useEffect(() => {
-    if(orderData){
-      setLoadUser(true);
+    if (orderData) {
+      // setLoadUser(true);
+      refetch();  
       redirect('/course-access/${data._id}')
     }
-  },[orderData,error])
+  }, [orderData, error]);
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>

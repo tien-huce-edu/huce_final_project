@@ -21,12 +21,6 @@ layoutRouter.put(
     editLayout
 )
 
-layoutRouter.get(
-    "/get-layout/:type",
-    updateAccessToken,
-    isAuthenticated,
-    authorizeRoles("admin"),
-    getLayoutByType
-)
+layoutRouter.get("/get-layout/:type", getLayoutByType)
 
 export default layoutRouter

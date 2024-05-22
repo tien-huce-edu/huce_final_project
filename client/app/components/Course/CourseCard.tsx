@@ -10,7 +10,6 @@ type Props = {
 };
 
 const CourseCard: FC<Props> = ({ item, isProfile }) => {
-  console.log(item.name, item.estimatedPrice)
   return (
     <Link
       href={!isProfile ? `/course/${item._id}` : `course-access/${item._id}`}
