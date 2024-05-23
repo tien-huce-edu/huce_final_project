@@ -1,4 +1,3 @@
-import { addAnswer } from "./../../../../server/controllers/course.controller";
 import { apiSlice } from "../api/apiSlice";
 
 export const coursesApi = apiSlice.injectEndpoints({
@@ -20,7 +19,7 @@ export const coursesApi = apiSlice.injectEndpoints({
     }),
     deleteCourse: builder.mutation({
       query: (id) => ({
-        url: `delete-courses/${id}`,
+        url: `delete-course/${id}`,
         method: "DELETE",
         credentials: "include" as const,
       }),
@@ -33,14 +32,14 @@ export const coursesApi = apiSlice.injectEndpoints({
         credentials: "include" as const,
       }),
     }),
-    getUsersAllCourse: builder.query({
+    getUsersAllCourses: builder.query({
       query: () => ({
         url: "get-courses",
         method: "GET",
         credentials: "include" as const,
       }),
     }),
-    getCourseDetail: builder.query({
+    getCourseDetails: builder.query({
       query: (id) => ({
         url: `get-course/${id}`,
         method: "GET",
@@ -57,29 +56,64 @@ export const coursesApi = apiSlice.injectEndpoints({
     addNewQuestion: builder.mutation({
       query: ({ question, courseId, contentId }) => ({
         url: "add-question",
+        body: {
+          question,
+          courseId,
+          contentId,
+        },
         method: "PUT",
-        body: { question, courseId, contentId },
         credentials: "include" as const,
       }),
     }),
     addAnswerInQuestion: builder.mutation({
       query: ({ answer, courseId, contentId, questionId }) => ({
         url: "add-answer",
+        body: {
+          answer,
+          courseId,
+          contentId,
+          questionId,
+        },
         method: "PUT",
-        body: { answer, courseId, contentId, questionId },
+        credentials: "include" as const,
+      }),
+    }),
+    addReviewInCourse: builder.mutation({
+      query: ({ review, rating, courseId }) => ({
+        url: `add-review/${courseId}`,
+        body: {
+          review,
+          rating,
+        },
+        method: "PUT",
+        credentials: "include" as const,
+      }),
+    }),
+    addReplyInReview: builder.mutation({
+      query: ({ comment, courseId, reviewId }: any) => ({
+        url: `add-reply`,
+        body: {
+          comment,
+          courseId,
+          reviewId,
+        },
+        method: "PUT",
         credentials: "include" as const,
       }),
     }),
   }),
 });
+
 export const {
+  useAddReplyInReviewMutation,
   useCreateCourseMutation,
-  useGetAllCoursesQuery,
   useDeleteCourseMutation,
-  useEditCourseMutation,
-  useGetUsersAllCourseQuery,
-  useGetCourseDetailQuery,
+  useGetAllCoursesQuery,
   useGetCourseContentQuery,
+  useEditCourseMutation,
   useAddNewQuestionMutation,
   useAddAnswerInQuestionMutation,
+  useGetUsersAllCoursesQuery,
+  useGetCourseDetailsQuery,
+  useAddReviewInCourseMutation,
 } = coursesApi;
