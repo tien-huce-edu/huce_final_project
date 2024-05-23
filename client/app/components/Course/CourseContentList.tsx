@@ -47,7 +47,6 @@ const CourseContentList: FC<Props> = (props) => {
         const sectionVideoCount: number = sectionVideos.length; // Number of videos in the current section
         const sectionVideoLength: number = sectionVideos.reduce(
           (totalLength: number, item: any) => {
-            console.log(item)
             return totalLength + item.videoLength;
           },
           0,
