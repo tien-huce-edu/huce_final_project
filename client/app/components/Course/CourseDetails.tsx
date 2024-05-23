@@ -3,30 +3,35 @@ import CoursePlayer from "@/app/utils/CoursePlayer";
 import Ratings from "@/app/utils/Ratings";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import React, { useEffect, useState } from "react";
+import { IoCheckmarkDoneOutline, IoCloseOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import CourseContentList from "./CourseContentList";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "../Payment/CheckOutForm";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 
 type Props = {
   data: any;
+  clientSecret: string;
+  stripePromise: any;
 };
 
-const CourseDetails = ({ data }: Props) => {
-  const { user } = useSelector((state: any) => state.auth);
-
+const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
+  const { data: userData ,refetch} = useLoadUserQuery(undefined, {refetchOnMountOrArgChange: true});
+  const user = userData?.user;
+  const [open, setOpen] = useState(false);
 
   const discountPercentenge =
     ((data.estimatedPrice - data.price) / data.price) * 100;
   const discountPercentengePrice = discountPercentenge.toFixed(0);
 
-  const isPurchased =
-    user && user?.courses?.find((item: any) => item._id === data.id);
   const handleOrder = (e: any) => {
-    console.log("gg");
+    setOpen(true);
   };
-  console.log(data.estimatedPrice)
 
+  const isPurchased =
+    user && user?.courses?.find((item: any) => item._id === data._id);
   return (
     <div>
       <div className="w-[90%] 800px:w-[90%] m-auto py-5">
@@ -111,8 +116,8 @@ const CourseDetails = ({ data }: Props) => {
                 <div className="mb-2 800px:mb-[unset]" />
                 <h5 className="text-[25px] font-Poppins text-black dark:text-white">
                   {Number.isInteger(data?.rating)
-                    ? data?.rating.toFixed(1)
-                    : data?.rating.toFixed(2)}{" "}
+                    ? data?.ratings.toFixed(1)
+                    : data?.ratings.toFixed(2)}{" "}
                   Course Rating • {data?.reviews?.length} Reviews
                 </h5>
               </div>
@@ -164,10 +169,12 @@ const CourseDetails = ({ data }: Props) => {
               <CoursePlayer videoUrl={data?.demoUrl} title={data?.title} />
               <div className="flex items-center">
                 <h1 className="pt-5 text-[25px] text-black dark:text-white">
-                  {data.price === 0 ? "Free" : data.price + "$"}
+                  {data.price === 0
+                    ? "Free"
+                    : data.price.toLocaleString("en-US") + "đ"}
                 </h1>
                 <h5 className="pl-3 text-[20px] mt-2 line-through opacity-80 text-black dark:text-white">
-                  {data.estimatedPrice}$
+                  {data.estimatedPrice.toLocaleString("en-US")}đ
                 </h5>
 
                 <h4 className="pl-5 pt-4 text-[22px] text-black dark:text-white">
@@ -177,17 +184,17 @@ const CourseDetails = ({ data }: Props) => {
               <div className="flex items-center">
                 {isPurchased ? (
                   <Link
-                    className={`${styles.button} !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
+                    className={`${styles.button} !w-[220px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
                     href={`/course-access/${data._id}`}
                   >
                     Enter to Course
                   </Link>
                 ) : (
                   <div
-                    className={`${styles.button} !w-[180px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
+                    className={`${styles.button} !w-[220px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
                     onClick={handleOrder}
                   >
-                    Buy Now {data.price}$
+                    Buy Now {data.price.toLocaleString("en-US")}đ
                   </div>
                 )}
               </div>
@@ -208,6 +215,31 @@ const CourseDetails = ({ data }: Props) => {
           </div>
         </div>
       </div>
+      <>
+        {open && (
+          <div className="w-full h-screen bg-[#00000036] fixed top-0 left-0 z-50 flex items-center justify-center">
+            <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow  p-3">
+              <div className="w-full flex justify-end">
+                <IoCloseOutline
+                  size={40}
+                  className="text-black cursor-pointer"
+                  onClick={() => setOpen(false)}
+                />
+              </div>
+              <div className="w-full">
+                {stripePromise && clientSecret && (
+                  <Elements
+                    stripe={stripePromise}
+                    options={{ clientSecret, loader: "auto" }}
+                  >
+                    <CheckoutForm setOpen={setOpen} data={data} refetch={refetch}/>
+                  </Elements>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </>
     </div>
   );
 };
