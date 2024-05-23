@@ -11,7 +11,13 @@ type Props = {
 };
 
 const CourseContent = ({ id, user }: Props) => {
-  const { data: contentData, isLoading } = useGetCourseContentQuery(id);
+  const {
+    data: contentData,
+    isLoading,
+    refetch,
+  } = useGetCourseContentQuery(id, {
+    refetchOnMountOrArgChange: true,
+  });
   const data = contentData?.content;
   const [open, setOpen] = useState(false);
   const [route, setRoute] = useState("Login");
@@ -23,13 +29,13 @@ const CourseContent = ({ id, user }: Props) => {
         <Loader />
       ) : (
         <>
-          <Header
+          {/* <Header
             activeItem={1}
             open={open}
             setOpen={setOpen}
             route={route}
             setRoute={setRoute}
-          />
+          /> */}
           <Heading
             title={data[activeVideo]?.title}
             description="Elearning is a programing community which is developed"
@@ -44,6 +50,7 @@ const CourseContent = ({ id, user }: Props) => {
                 activeVideo={activeVideo}
                 setActiveVideo={setActiveVideo}
                 user={user}
+                refetch={refetch}
               />
             </div>
             <div className="hidden 800px:block 800px:col-span-3">
