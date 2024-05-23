@@ -260,7 +260,9 @@ export const addAnswer = catchAsyncError(
 
             const newAnswer: any = {
                 user: req.user as IUser,
-                answer
+                answer,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
 
             // question.questionReplies ??= [];
@@ -348,10 +350,13 @@ export const addReview = catchAsyncError(
 
             await course?.save()
 
-            const notification = {
+            await NotificationModel.create({
+                userId: req.user?._id,
                 title: "Có người vừa đánh giá khóa học của bạn",
                 message: `Khóa học ${course?.name} của bạn vừa nhận được một đánh giá mới từ ${req.user?.name}`
-            }
+            })
+
+            await redis.set(courseId, JSON.stringify(course), "EX", 604800)
 
             res.status(200).json({
                 success: true,
@@ -383,16 +388,18 @@ export const addReplyToReview = catchAsyncError(
             if (!review) {
                 return next(new ErrorHandler("Không tìm thấy đánh giá!", 404))
             }
-            const newReply: any = {
+            const replyData: any = {
                 user: req.user,
-                comment
+                comment,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
 
             if (!review.commentReplies) {
                 review.commentReplies = []
             }
 
-            review.commentReplies.push(newReply)
+            review.commentReplies.push(replyData)
 
             await course.save()
 

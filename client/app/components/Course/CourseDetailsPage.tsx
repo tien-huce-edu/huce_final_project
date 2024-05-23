@@ -1,4 +1,4 @@
-import { useGetCourseDetailQuery } from "@/redux/features/courses/coursesApi";
+import { useGetCourseDetailsQuery } from "@/redux/features/courses/coursesApi";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader/Loader";
 import Heading from "@/app/utils/Heading";
@@ -19,7 +19,7 @@ const CourseDetailsPage = ({ id }: Props) => {
   const [route, setRoute] = useState("Login");
   const [open, setOpen] = useState(false);
 
-  const { data, isLoading } = useGetCourseDetailQuery(id);
+  const { data, isLoading } = useGetCourseDetailsQuery(id);
   const { data: config } = useGetStripePublishableKeyQuery({});
   const [createPaymentIntent, { data: paymentIntentData }] =
     useCreatePaymentIntentMutation();
