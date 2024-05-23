@@ -18,7 +18,9 @@ type Props = {
 };
 
 const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
-  const { data: userData ,refetch} = useLoadUserQuery(undefined, {refetchOnMountOrArgChange: true});
+  const { data: userData, refetch } = useLoadUserQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
   const user = userData?.user;
   const [open, setOpen] = useState(false);
 
@@ -232,7 +234,12 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                     stripe={stripePromise}
                     options={{ clientSecret, loader: "auto" }}
                   >
-                    <CheckoutForm setOpen={setOpen} data={data} refetch={refetch}/>
+                    <CheckoutForm
+                      setOpen={setOpen}
+                      data={data}
+                      user={user}
+                      refetch={refetch}
+                    />
                   </Elements>
                 )}
               </div>
