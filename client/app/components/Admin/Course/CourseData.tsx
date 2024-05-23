@@ -20,39 +20,37 @@ const CourseData: FC<Props> = ({
   active,
   setActive,
 }) => {
-  const handleBenefitChange = (index: any, value: string) => {
-    const updatedBenefit = [...benefits];
-    updatedBenefit[index].title = value;
-    setBenefits(updatedBenefit);
+  const handleBenefitChange = (index: number, value: any) => {
+    const updatedBenefits = [...benefits];
+    updatedBenefits[index].title = value;
+    setBenefits(updatedBenefits);
   };
 
   const handleAddBenefit = () => {
     setBenefits([...benefits, { title: "" }]);
   };
 
-  const handlePrerequisiteChange = (index: any, value: string) => {
-    const updatedPrerequisite = [...prerequisites];
-    updatedPrerequisite[index].title = value;
-    setPrerequisites(updatedPrerequisite);
+  const handlePrerequisitesChange = (index: number, value: any) => {
+    const updatedPrerequisites = [...prerequisites];
+    updatedPrerequisites[index].title = value;
+    setPrerequisites(updatedPrerequisites);
   };
 
-  const handleAddPrerequisite = () => {
+  const handleAddPrerequisites = () => {
     setPrerequisites([...prerequisites, { title: "" }]);
   };
-
   const prevButton = () => {
     setActive(active - 1);
   };
 
-  const handleOption = () => {
-    console.log(benefits[benefits.length - 1]?.title);
+  const handleOptions = () => {
     if (
       benefits[benefits.length - 1]?.title !== "" &&
       prerequisites[prerequisites.length - 1]?.title !== ""
     ) {
       setActive(active + 1);
     } else {
-      toast.error("Please fill the fields to go to next!");
+      toast.error("Please fill the fields for go to next!");
     }
   };
 
@@ -92,12 +90,12 @@ const CourseData: FC<Props> = ({
             placeholder="You need knowledge be able to..."
             className={`${styles.input} my-2`}
             value={prerequisite.title}
-            onChange={(e) => handlePrerequisiteChange(index, e.target.value)}
+            onChange={(e) => handlePrerequisitesChange(index, e.target.value)}
           />
         ))}
         <AiOutlinePlusCircle
           style={{ margin: "10px 0px", cursor: "pointer", width: "30px" }}
-          onClick={handleAddPrerequisite}
+          onClick={handleAddPrerequisites}
         />
       </div>
       <div className="w-full flex items-center justify-between">
@@ -109,7 +107,7 @@ const CourseData: FC<Props> = ({
         </div>
         <div
           className="w-full 800px:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 m-[20px] cursor-pointer"
-          onClick={() => handleOption()}
+          onClick={() => handleOptions()}
         >
           Next
         </div>

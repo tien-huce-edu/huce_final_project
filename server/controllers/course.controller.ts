@@ -1,7 +1,7 @@
 import axios from "axios"
 import cloudinary from "cloudinary"
 import ejs from "ejs"
-import { NextFunction, Request, Response } from "express"
+import e, { NextFunction, Request, Response } from "express"
 import mongoose from "mongoose"
 import path from "path"
 import { catchAsyncError } from "../middleware/catchAsyncErrors"
@@ -87,10 +87,25 @@ export const getSingleCourse = catchAsyncError(
             const isCacheExist = await redis.get(courseId)
 
             if (isCacheExist) {
-                return res.status(200).json({
-                    success: true,
-                    course: JSON.parse(isCacheExist)
-                })
+                const courseInDb = await CourseModel.findById(req.params.id)
+                if (JSON.stringify(courseInDb) === isCacheExist) {
+                    return res.status(200).json({
+                        success: true,
+                        course: JSON.parse(isCacheExist)
+                    })
+                } else {
+                    const course = await CourseModel.findById(req.params.id).select(
+                        "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+                    )
+                    await redis.set(courseId, JSON.stringify(course))
+                    if (!course) {
+                        return next(new ErrorHandler("Không tìm thấy khóa học!", 404))
+                    }
+                    res.status(200).json({
+                        success: true,
+                        course
+                    })
+                }
             } else {
                 const course = await CourseModel.findById(req.params.id).select(
                     "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
@@ -192,7 +207,7 @@ export const addQuestion = catchAsyncError(
             courseContent.questions.push(newQuestion)
 
             await NotificationModel.create({
-                user: req.user?._id,
+                userId: req.user?._id,
                 title: "Câu hỏi mới trong khóa học của bạn",
                 message: `${req.user?.name} đã đặt câu hỏi mới trong khoá học của bạn ${course?.name}`
             })
@@ -245,7 +260,9 @@ export const addAnswer = catchAsyncError(
 
             const newAnswer: any = {
                 user: req.user as IUser,
-                answer
+                answer,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
 
             // question.questionReplies ??= [];
@@ -255,7 +272,7 @@ export const addAnswer = catchAsyncError(
 
             if (req.user?._id === question.user._id) {
                 await NotificationModel.create({
-                    user: req.user?._id,
+                    userId: req.user?._id,
                     title: "Câu trả lời cho câu hỏi của bạn",
                     message: `Câu hỏi của bạn trong khoá học ${course?.name} vừa nhận được một câu trả lời mới`
                 })
@@ -328,15 +345,18 @@ export const addReview = catchAsyncError(
                 avg += item.rating
             })
             if (course) {
-                course.rating = avg / course.reviews.length
+                course.ratings = avg / course.reviews.length
             }
 
             await course?.save()
 
-            const notification = {
+            await NotificationModel.create({
+                userId: req.user?._id,
                 title: "Có người vừa đánh giá khóa học của bạn",
                 message: `Khóa học ${course?.name} của bạn vừa nhận được một đánh giá mới từ ${req.user?.name}`
-            }
+            })
+
+            await redis.set(courseId, JSON.stringify(course), "EX", 604800)
 
             res.status(200).json({
                 success: true,
@@ -368,16 +388,18 @@ export const addReplyToReview = catchAsyncError(
             if (!review) {
                 return next(new ErrorHandler("Không tìm thấy đánh giá!", 404))
             }
-            const newReply: any = {
+            const replyData: any = {
                 user: req.user,
-                comment
+                comment,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
 
             if (!review.commentReplies) {
                 review.commentReplies = []
             }
 
-            review.commentReplies.push(newReply)
+            review.commentReplies.push(replyData)
 
             await course.save()
 

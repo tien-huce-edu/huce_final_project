@@ -47,7 +47,7 @@ const Hero: FC<Props> = (props) => {
           <div className="1500px:w-[55%] 1100px:w-[78%] w-[90%] h-[50px] bg-transparent relative">
             <input
               type="search"
-              placeholder="Search Courses..."
+              placeholder="Tìm kiếm khoá học..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="bg-transparent border dark:border-none dark:bg-[#575757] dark:placeholder:text-[#ffffffdd] rounded-[5px] p-2 w-full h-full outline-none text-[#0000004e] dark:text-[#ffffffe6] text-[20px] font-[500] font-Josefin"
@@ -84,12 +84,12 @@ const Hero: FC<Props> = (props) => {
               className="rounded-full ml-[-20px]"
             />
             <p className="font-Josefin dark:text-[#edfff4] text-[#000000b3] 1000px:pl-3 text-[18px] font-[600]">
-              500K+ People already trusted us.{" "}
+              500K+ người đã tin tưởng chúng tôi.{" "}
               <Link
                 href="/courses"
                 className="dark:text-[#46e256] text-[crimson]"
               >
-                View Courses
+                Xem khoá học
               </Link>{" "}
             </p>
           </div>

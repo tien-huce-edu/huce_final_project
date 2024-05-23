@@ -13,7 +13,7 @@ export const newOrder = catchAsyncError(async (data: any, res: Response, next: N
     })
 })
 
-export const getAllOrdersService = async (res: Response) => {
+export const getAllOrderService = async (res: Response) => {
     const orders = await orderModel.find().sort({ createdAt: -1 })
     res.status(201).json({
         success: true,

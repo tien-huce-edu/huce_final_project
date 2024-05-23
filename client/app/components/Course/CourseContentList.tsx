@@ -18,7 +18,6 @@ const CourseContentList: FC<Props> = (props) => {
     ...new Set<string>(props.data?.map((item: any) => item.videoSection)),
   ];
 
-  console.log(videoSections);
   let totalCount: number = 0; // Total count of videos from previous sections
 
   const toggleSection = (section: string) => {
@@ -47,7 +46,9 @@ const CourseContentList: FC<Props> = (props) => {
 
         const sectionVideoCount: number = sectionVideos.length; // Number of videos in the current section
         const sectionVideoLength: number = sectionVideos.reduce(
-          (totalLength: number, item: any) => totalLength + item.videoLength,
+          (totalLength: number, item: any) => {
+            return totalLength + item.videoLength;
+          },
           0,
         );
         const sectionStartIndex: number = totalCount; // Start index of videos within the current section
