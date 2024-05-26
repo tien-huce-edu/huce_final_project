@@ -6,7 +6,7 @@ import Heading from "@/app/utils/Heading";
 
 type Props = {};
 
-const page = (props: any) => {
+const Page = (props: any) => {
 
   const id = props.params.id;
   return (
@@ -30,4 +30,4 @@ const page = (props: any) => {
   );
 };
 
-export default page;
+export default Page;
