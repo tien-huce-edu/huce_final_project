@@ -1,20 +1,41 @@
-<mxfile host="Electron" modified="2024-05-09T11:00:43.421Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="YyZ8f-Vj8i7ii7AcaXGm" version="24.2.5" type="device">
+<mxfile host="Electron" modified="2024-05-24T19:22:43.900Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="5Q6Xt8FP6n1QPmWRVIzm" version="24.2.5" type="device">
   <diagram name="Page-1" id="Y4kko5aDPulE_gLXEnAQ">
-    <mxGraphModel dx="1775" dy="1031" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1775" dy="878" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="vceN0o1VC8EbYdvrYY7v-1" value="Giáo viên (admin)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+        <mxCell id="vceN0o1VC8EbYdvrYY7v-1" value="Giáo viên (admin)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry y="320" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="vceN0o1VC8EbYdvrYY7v-2" value="Sinh viên" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+        <mxCell id="vceN0o1VC8EbYdvrYY7v-2" value="Sinh viên" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="810" y="320" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="vceN0o1VC8EbYdvrYY7v-7" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="vceN0o1VC8EbYdvrYY7v-7" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="80" y="70" width="620" height="810" as="geometry" />
         </mxCell>
-        <mxCell id="vceN0o1VC8EbYdvrYY7v-8" value="Quản lý nhân viên" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="vceN0o1VC8EbYdvrYY7v-8" value="Quản lý học viên" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="180" y="90" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dauayEVXxmCnHYtXqDZh-1" value="CRUD User" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dauayEVXxmCnHYtXqDZh-3" value="Lấy thông tin order" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="210" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dauayEVXxmCnHYtXqDZh-4" value="Lấy thông tin thông&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;báo&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="270" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dauayEVXxmCnHYtXqDZh-5" value="CU bố cục&amp;nbsp;&lt;div&gt;trang chủ&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="330" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dauayEVXxmCnHYtXqDZh-6" value="Lấy dữ liệu&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;khoá học&lt;/span&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="390" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dauayEVXxmCnHYtXqDZh-7" value="CRUD Khoá học" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="450" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dauayEVXxmCnHYtXqDZh-8" value="Trả lời đánh giá&amp;nbsp;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="510" width="120" height="50" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
