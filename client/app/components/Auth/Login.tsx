@@ -16,6 +16,7 @@ import { signIn } from "next-auth/react";
 type Props = {
   setRoute: (route: string) => void;
   setOpen: (open: boolean) => void;
+  refetch?: any;
 };
 
 const schema = Yup.object().shape({
@@ -27,7 +28,7 @@ const schema = Yup.object().shape({
     .min(6, "Password phải lớn hơn 6 ký tự"),
 });
 
-const Login: FC<Props> = ({ setRoute, setOpen }) => {
+const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
   const [show, setShow] = useState(false);
   const [login, { isSuccess, error }] = useLoginMutation();
 
@@ -46,6 +47,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
     if (isSuccess) {
       toast.success("Đăng nhập thành công");
       setOpen(false);
+      refetch();
     }
     if (error && typeof error === "object") {
       if ("data" in error) {

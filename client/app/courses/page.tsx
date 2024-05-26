@@ -12,7 +12,7 @@ import Loader from "../components/Loader/Loader";
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   const searchParams = useSearchParams();
   const search = searchParams?.get("title");
   const { data, isLoading } = useGetUsersAllCoursesQuery(undefined, {
@@ -117,4 +117,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;
