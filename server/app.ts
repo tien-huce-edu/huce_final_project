@@ -11,6 +11,7 @@ import orderRouter from "./routes/order.route"
 import notificationRouter from "./routes/notification.route"
 import analysticRouter from "./routes/analystics.route"
 import layoutRouter from "./routes/layout.route"
+import rateLimit from "express-rate-limit"
 
 // body parser
 app.use(express.json({ limit: "50mb" }))
@@ -25,6 +26,14 @@ app.use(
         credentials: true
     })
 )
+
+// api req limit
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: "draft-7",
+    legacyHeaders: false
+})
 
 // API route
 app.use(
@@ -47,10 +56,12 @@ app.get("/api/v1/test", (req: Request, res: Response, next: NextFunction) => {
 
 // Unknow route
 
-app.get("*", (req: Request, res: Response, next: NextFunction) => {
+app.all("*", (req: Request, res: Response, next: NextFunction) => {
     const err = new Error(`Route ${req.originalUrl} not found`) as any
     err.statusCode = 404
     next(err)
 })
+
+app.use(limiter)
 
 app.use(ErrorMiddleware)
