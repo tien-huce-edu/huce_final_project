@@ -80,7 +80,7 @@ const AllInvoices: FC<Props> = ({ isDashboard }) => {
         userEmail: item.userEmail,
         title: item.title,
         price: item.price,
-        created_at: format(item.createdAt),
+        created_at: `${format(item.createdAt)}${" (" + new Date(item.createdAt).toLocaleDateString() + ") "}`,
       });
     });
 
