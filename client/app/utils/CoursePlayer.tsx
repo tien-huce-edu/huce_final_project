@@ -20,7 +20,7 @@ const CoursePlayer: FC<Props> = ({ videoUrl }) => {
       .then((res) => {
         setVideoData(res.data);
       });
-  }, []);
+  }, [videoUrl]);
   return (
     <div style={{ paddingTop: "41%", position: "relative" }}>
       <iframe

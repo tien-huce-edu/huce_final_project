@@ -200,6 +200,7 @@ const CourseContentMedia = ({
       }
     }
   };
+  console.log(data[activeVideo]?.title)
   return (
     <div className="w-[95%] 800px:w-[86%] py-4 m-auto">
       <CoursePlayer
