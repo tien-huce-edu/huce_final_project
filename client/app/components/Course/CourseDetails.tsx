@@ -199,11 +199,15 @@ const CourseDetails = ({
                         </div>
                         <div className="pl-2">
                           <div className="flex items-center">
-                            <h5 className="text-[20px]">{i.user.name}</h5>{" "}
+                            <h5 className="text-[20px] text-black dark:text-white">
+                              {i.user.name}
+                            </h5>{" "}
                             <VscVerifiedFilled className="text-[#0095F6] ml-2 text-[20px]" />
                           </div>
-                          <p>{i.comment}</p>
-                          <small className="text-[#ffffff83]">
+                          <p className="text-black dark:text-white">
+                            {i.comment}
+                          </p>
+                          <small className="text-[#ffffff83] text-black dark:text-white">
                             {format(i.createdAt)} •
                           </small>
                         </div>

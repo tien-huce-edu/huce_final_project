@@ -57,5 +57,6 @@ const Custom: FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     socketId.on("connection", () => {});
   }, []);
-  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
+
+  return <>{<>{children}</>}</>;
 };

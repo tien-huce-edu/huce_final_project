@@ -7,11 +7,11 @@ type Props = {
   isDashboard?: boolean;
 };
 
-const DashboardHero: FC<Props> = ({isDashboard}) => {
+const DashboardHero: FC<Props> = ({ isDashboard }) => {
   const [open, setOpen] = useState(false);
   return (
     <div>
-      <DashboardHeader open={open} setOpen={setOpen}/>
+      <DashboardHeader open={open} setOpen={setOpen} />
       {isDashboard && <DashboardWidgets open={open} />}
     </div>
   );
