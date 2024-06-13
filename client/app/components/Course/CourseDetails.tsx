@@ -1,37 +1,58 @@
 import { styles } from "@/app/styles/style";
 import CoursePlayer from "@/app/utils/CoursePlayer";
 import Ratings from "@/app/utils/Ratings";
-import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { IoCheckmarkDoneOutline, IoCloseOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
-import CourseContentList from "./CourseContentList";
-import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from "../Payment/CheckOutForm";
+import { format } from "timeago.js";
+
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
+import Image from "next/image";
+import { Elements } from "@stripe/react-stripe-js";
+import { VscVerifiedFilled } from "react-icons/vsc";
+import CourseContentList from "./CourseContentList";
+import CheckOutForm from "../Payment/CheckOutForm";
 
 type Props = {
   data: any;
   clientSecret: string;
   stripePromise: any;
+  setRoute: any;
+  setOpen: any;
 };
 
-const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
-  const { data: userData ,refetch} = useLoadUserQuery(undefined, {refetchOnMountOrArgChange: true});
-  const user = userData?.user;
+const CourseDetails = ({
+  data,
+  stripePromise,
+  clientSecret,
+  setRoute,
+  setOpen: openAuthModal,
+}: Props) => {
+  const { data: userData, refetch } = useLoadUserQuery(undefined, {});
+  const [user, setUser] = useState<any>();
   const [open, setOpen] = useState(false);
 
-  const discountPercentenge =
-    ((data.estimatedPrice - data.price) / data.price) * 100;
-  const discountPercentengePrice = discountPercentenge.toFixed(0);
+  useEffect(() => {
+    setUser(userData?.user);
+  }, [userData]);
 
-  const handleOrder = (e: any) => {
-    setOpen(true);
-  };
+  const dicountPercentenge =
+    ((data?.estimatedPrice - data.price) / data?.estimatedPrice) * 100;
+
+  const discountPercentengePrice = dicountPercentenge.toFixed(0);
 
   const isPurchased =
     user && user?.courses?.find((item: any) => item._id === data._id);
+
+  const handleOrder = (e: any) => {
+    if (user) {
+      setOpen(true);
+    } else {
+      setRoute("Login");
+      openAuthModal(true);
+    }
+  };
+
   return (
     <div>
       <div className="w-[90%] 800px:w-[90%] m-auto py-5">
@@ -51,6 +72,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                 {data.purchased} Students
               </h5>
             </div>
+
             <br />
             <h1 className="text-[25px] font-Poppins font-[600] text-black dark:text-white">
               What you will learn from this course?
@@ -115,15 +137,15 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                 <Ratings rating={data?.ratings} />
                 <div className="mb-2 800px:mb-[unset]" />
                 <h5 className="text-[25px] font-Poppins text-black dark:text-white">
-                  {Number.isInteger(data?.rating)
+                  {Number.isInteger(data?.ratings)
                     ? data?.ratings.toFixed(1)
                     : data?.ratings.toFixed(2)}{" "}
                   Course Rating • {data?.reviews?.length} Reviews
                 </h5>
               </div>
               <br />
-              {data?.reviews &&
-                [...data.reviews].reverse().map((item: any, index: number) => (
+              {(data?.reviews && [...data.reviews].reverse()).map(
+                (item: any, index: number) => (
                   <div className="w-full pb-4" key={index}>
                     <div className="flex">
                       <div className="w-[50px] h-[50px]">
@@ -150,7 +172,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                           {item.comment}
                         </p>
                         <small className="text-[#000000d1] dark:text-[#ffffff83]">
-                          {item.createdAt} •
+                          {format(item.createdAt)} •
                         </small>
                       </div>
                       <div className="pl-2 flex 800px:hidden items-center">
@@ -160,21 +182,53 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                         <Ratings rating={item.rating} />
                       </div>
                     </div>
+                    {item.commentReplies.map((i: any, index: number) => (
+                      <div className="w-full flex 800px:ml-16 my-5" key={index}>
+                        <div className="w-[50px] h-[50px]">
+                          <Image
+                            src={
+                              i.user.avatar
+                                ? i.user.avatar.url
+                                : "https://res.cloudinary.com/dshp9jnuy/image/upload/v1665822253/avatars/nrxsg8sd9iy10bbsoenn.png"
+                            }
+                            width={50}
+                            height={50}
+                            alt=""
+                            className="w-[50px] h-[50px] rounded-full object-cover"
+                          />
+                        </div>
+                        <div className="pl-2">
+                          <div className="flex items-center">
+                            <h5 className="text-[20px] text-black dark:text-white">
+                              {i.user.name}
+                            </h5>{" "}
+                            <VscVerifiedFilled className="text-[#0095F6] ml-2 text-[20px]" />
+                          </div>
+                          <p className="text-black dark:text-white">
+                            {i.comment}
+                          </p>
+                          <small className="text-[#ffffff83] text-black dark:text-white">
+                            {format(i.createdAt)} •
+                          </small>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ),
+              )}
             </div>
           </div>
           <div className="w-full 800px:w-[35%] relative">
-            <div className="sticky top-[100px] left-0 z-500 w-full">
+            <div className="sticky top-[100px] left-0 z-50 w-full">
               <CoursePlayer videoUrl={data?.demoUrl} title={data?.title} />
               <div className="flex items-center">
                 <h1 className="pt-5 text-[25px] text-black dark:text-white">
                   {data.price === 0
                     ? "Free"
-                    : data.price.toLocaleString("en-US") + "đ"}
+                    : data.price.toLocaleString() + "đ"}
                 </h1>
                 <h5 className="pl-3 text-[20px] mt-2 line-through opacity-80 text-black dark:text-white">
-                  {data.estimatedPrice.toLocaleString("en-US")}đ
+                  {data.estimatedPrice.toLocaleString()}đ
                 </h5>
 
                 <h4 className="pl-5 pt-4 text-[22px] text-black dark:text-white">
@@ -194,7 +248,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                     className={`${styles.button} !w-[220px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
                     onClick={handleOrder}
                   >
-                    Buy Now {data.price.toLocaleString("en-US")}đ
+                    Mua ngay {data.price.toLocaleString()}đ
                   </div>
                 )}
               </div>
@@ -218,7 +272,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
       <>
         {open && (
           <div className="w-full h-screen bg-[#00000036] fixed top-0 left-0 z-50 flex items-center justify-center">
-            <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow  p-3">
+            <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow p-3">
               <div className="w-full flex justify-end">
                 <IoCloseOutline
                   size={40}
@@ -228,11 +282,13 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
               </div>
               <div className="w-full">
                 {stripePromise && clientSecret && (
-                  <Elements
-                    stripe={stripePromise}
-                    options={{ clientSecret, loader: "auto" }}
-                  >
-                    <CheckoutForm setOpen={setOpen} data={data} refetch={refetch}/>
+                  <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <CheckOutForm
+                      setOpen={setOpen}
+                      data={data}
+                      user={user}
+                      refetch={refetch}
+                    />
                   </Elements>
                 )}
               </div>

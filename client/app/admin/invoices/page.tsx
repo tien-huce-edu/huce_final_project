@@ -8,7 +8,7 @@ import Heading from "../../utils/Heading";
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   return (
     <div>
       <Heading
@@ -29,4 +29,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;
