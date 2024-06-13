@@ -206,13 +206,15 @@ export const addQuestion = catchAsyncError(
 
             courseContent.questions.push(newQuestion)
 
+            
             await NotificationModel.create({
                 userId: req.user?._id,
                 title: "Câu hỏi mới trong khóa học của bạn",
                 message: `${req.user?.name} đã đặt câu hỏi mới trong khoá học của bạn ${course?.name}`
             })
-
+            
             await course?.save()
+            await redis.set(courseId, JSON.stringify(course))
 
             res.status(200).json({
                 success: true,
@@ -269,6 +271,7 @@ export const addAnswer = catchAsyncError(
             question.questionReplies.push(newAnswer)
 
             await course?.save()
+            await redis.set(courseId, JSON.stringify(course))
 
             if (req.user?._id === question.user._id) {
                 await NotificationModel.create({

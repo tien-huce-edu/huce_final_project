@@ -11,6 +11,9 @@ const nextConfig = {
       "randomuser.me",
     ],
   },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  }
 };
 
 export default nextConfig;
