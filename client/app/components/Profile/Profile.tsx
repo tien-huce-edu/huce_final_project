@@ -6,6 +6,7 @@ import CourseCard from "../Course/CourseCard";
 import ChangePassword from "./ChangePassword";
 import ProfileInfo from "./ProfileInfo";
 import SideBarProfile from "./SideBarProfile";
+import { redirect } from "next/navigation";
 
 interface Props {
   user: any;
