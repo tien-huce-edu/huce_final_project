@@ -29,13 +29,13 @@ const CourseContent = ({ id, user }: Props) => {
         <Loader />
       ) : (
         <>
-          {/* <Header
+          <Header
             activeItem={1}
             open={open}
             setOpen={setOpen}
             route={route}
             setRoute={setRoute}
-          /> */}
+          />
           <Heading
             title={data[activeVideo]?.title}
             description="Elearning is a programing community which is developed"
@@ -53,7 +53,7 @@ const CourseContent = ({ id, user }: Props) => {
                 refetch={refetch}
               />
             </div>
-            <div className="hidden 800px:block 800px:col-span-3">
+            <div className="hidden 800px:block 800px:col-span-3 pb-5">
               <CourseContentList
                 setActiveVideo={setActiveVideo}
                 data={data}

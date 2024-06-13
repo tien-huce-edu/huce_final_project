@@ -39,6 +39,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
     fileReader.onload = () => {
       if (fileReader.readyState === 2) {
         const avatar = fileReader.result;
+        
         updateAvatar(avatar);
       }
     };

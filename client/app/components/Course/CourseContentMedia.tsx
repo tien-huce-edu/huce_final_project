@@ -20,9 +20,9 @@ import {
 import { BiMessage } from "react-icons/bi";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import Ratings from "@/app/utils/Ratings";
-// import socketIO from "socket.io-client";
-// const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
-// const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
+import socketIO from "socket.io-client";
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 type Props = {
   data: any;
@@ -114,22 +114,22 @@ const CourseContentMedia = ({
 
       refetch();
       toast.success("Question added succesfully");
-      // socketId.emit("notification", {
-      //   title: "New Question Received ",
-      //   message: `You have a new Question from ${data[activeVideo].title}`,
-      //   userId: user._id,
-      // });
+      socketId.emit("notification", {
+        title: "New Question Received ",
+        message: `Khoá học ${data[activeVideo].title} của bạn có một câu hỏi mới`,
+        userId: user._id,
+      });
     }
     if (answerSuccess) {
       setAnswer("");
       refetch();
-      // if (user.role !== "admin") {
-      //   socketId.emit("notification", {
-      //     title: `New Question Reply Received`,
-      //     message: `You have a new question reply in ${data[activeVideo].title}`,
-      //     userId: user._id,
-      //   });
-      // }
+      if (user.role !== "admin") {
+        socketId.emit("notification", {
+          title: `New Question Reply Received`,
+          message: `Bạn có một trả lời mới từ video ${data[activeVideo].title}`,
+          userId: user._id,
+        });
+      }
     }
     if (error) {
       if ("data" in error) {
@@ -148,11 +148,11 @@ const CourseContentMedia = ({
       setRating(1);
       toast.success("Review added succesfully");
       courseRefetch();
-      // socketId.emit("notification", {
-      //   title: "New Review Received ",
-      //   message: `${user?.name} has given a review in ${course?.name}`,
-      //   userId: user._id,
-      // });
+      socketId.emit("notification", {
+        title: "New Review Received ",
+        message: `${user?.name} đã đánh giá khoá học ${course?.name}`,
+        userId: user._id,
+      });
     }
     if (reviewError) {
       if ("data" in reviewError) {
@@ -200,6 +200,7 @@ const CourseContentMedia = ({
       }
     }
   };
+  console.log(data[activeVideo]?.title)
   return (
     <div className="w-[95%] 800px:w-[86%] py-4 m-auto">
       <CoursePlayer

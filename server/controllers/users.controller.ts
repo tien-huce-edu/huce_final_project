@@ -339,7 +339,6 @@ export const updatePassword = catchAsyncError(
             res.status(200).json({
                 success: true,
                 message: "Cập nhật mật khẩu thành công",
-                user
             })
         } catch (error: any) {
             return next(new ErrorHandler(error.message, 400))
@@ -392,7 +391,7 @@ export const updateProfilePicture = catchAsyncError(
                 user
             })
         } catch (error: any) {
-            return next(new ErrorHandler(error.message, 400))
+            return next(new ErrorHandler(error, 400))
         }
     }
 )
