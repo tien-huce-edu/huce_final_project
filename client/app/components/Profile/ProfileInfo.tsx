@@ -25,7 +25,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
     { isSuccess: editProfileSuccess, error: editProfileError },
   ] = useEditProfileMutation();
   const [loadUser, setLoadUser] = useState(false);
-  const {} = useLoadUserQuery(undefined, { skip: loadUser ? false : true });
+  const {refetch} = useLoadUserQuery(undefined, { refetchOnMountOrArgChange: true });
 
   const imageHandler = async (e: any) => {
     if (e.target.files[0].size > 1000 * 1000 * 8) {
@@ -39,7 +39,6 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
     fileReader.onload = () => {
       if (fileReader.readyState === 2) {
         const avatar = fileReader.result;
-        
         updateAvatar(avatar);
       }
     };
@@ -48,6 +47,8 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
   useEffect(() => {
     if (isSuccess || editProfileSuccess) {
       setLoadUser(true);
+      refetch()
+      toast.success("Update avatar success!!")
     }
     if (error || editProfileError) {
       if (error && typeof error === "object") {
